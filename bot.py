@@ -21,3 +21,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
+import configparser
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+# 유저 계정 정보 로드
+config = configparser.ConfigParser()
+config.read('config.ini')
+user_id = config['USER.id']
+user_password = config['USER.password']
+
+class CyBot:
+    def __init__(self):
+        driver = webdriver.Chrome('./driver/chromedriver.exe')
+        driver.implicitly_wait(3)
+
+        # 싸이월드 페이지 열기
+        driver.get('https://cyworld.com')
+        self._driver = driver
+
+    def login(self, user_id, user_password):
+        self._driver.find_element_by_name('email').send_keys(user_id)
+        self._driver.find_element_by_name('passwd').send_keys(user_password, Keys.RETURN)
+
+if __name__ == '__main__':
+
+    if not (user_id and user_password):
+        raise ValueError('계정 정보가 필요합니다.')
+
+    bot = CyBot()
+    bot.login(user_id, user_password)
