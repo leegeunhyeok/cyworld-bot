@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import time
 import configparser
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -33,6 +34,9 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 user_email = config.get('user', 'email')
 user_password = config.get('user', 'password')
+
+feeder = config.get('bot', 'feeder')
+downloader = config.get('bot', 'downloader')
 
 class CyBot:
     def __init__(self):
@@ -52,14 +56,15 @@ class CyBot:
         self._logger.info('싸이월드 홈페이지 접속 중..')
         # 싸이월드 페이지 열기
         self._driver.get('https://cyworld.com')
-        self._logger.info('싸이월드 홈페이지 접속 완료')
+        self._logger.success('싸이월드 홈페이지 접속 완료')
         return self
 
     def login(self, user_email, user_password):
         self._logger.info('로그인 시도 중..')
         self._driver.find_element_by_name('email').send_keys(user_email)
         self._driver.find_element_by_name('passwd').send_keys(user_password, Keys.RETURN)
-        
+        time.sleep(3)
+
         url = self._driver.current_url
         if 'cyMain' in url:
             self._logger.error('사용자 정보를 다시 확인해주세요')
@@ -78,8 +83,16 @@ class CyBot:
             self._logger.error('마이 홈으로 이동할 수 없습니다')
             exit()
 
-        self._logger.info('이동 완료')
+        self._logger.success('이동 완료')
         return self
+
+    def feeder(self, process=2):
+        images = self._driver.find_elements_by_class_name('timeline_img')
+        print(images)
+        return self
+
+    def downloader(self, process=2):
+        pass
 
 if __name__ == '__main__':
 
@@ -89,4 +102,6 @@ if __name__ == '__main__':
     bot = CyBot()
     bot.init() \
         .login(user_email, user_password) \
-        .home()
+        .home() \
+        .feeder(feeder) \
+        .downloader(downloader)
