@@ -43,10 +43,10 @@ class Logger:
         self._log('[INFO]', args)
 
     def warning(self, *args):
-        pass
+        self._log('[WARNING]', args)
 
     def danger(self, *args):
-        pass
+        self._log('[DANGER]', args)
 
     def critical(self, *args):
-        pass
+        self._log('[CRITICAL]', args)
