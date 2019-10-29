@@ -42,8 +42,14 @@ class Logger:
     def info(self, *args):
         self._log('[INFO]', args)
 
+    def success(self, *args):
+        self._log('[SUCCESS]', args)
+
     def warning(self, *args):
         self._log('[WARNING]', args)
+
+    def error(self, *args):
+        self._log('[ERROR]', args)
 
     def danger(self, *args):
         self._log('[DANGER]', args)
