@@ -21,19 +21,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+import os
+from datetime import datetime
 
 class Logger:
     def __init__(self, filename):
+        self._format = '%Y-%m-%d %H:%M:%S.%f'
         self._filename = filename
 
     def _timestamp(self):
-        pass
+        return '(' + datetime.now().strftime(self._format) + ')'
 
-    def _log(self, *args):
-        pass
+    def _log(self, level, *args):
+        m = self._timestamp() + ' - ' + level + ' ' + (' '.join(args[0]))
+        print(m)
+
+        with open(self._filename, 'a', encoding='utf8') as f:
+            f.write(m.strip() + '\n')
 
     def info(self, *args):
-        pass
+        self._log('[INFO]', args)
 
     def warning(self, *args):
         pass
