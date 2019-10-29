@@ -46,12 +46,14 @@ class CyBot:
         driver = webdriver.Chrome('./driver/chromedriver' + ext)
         driver.implicitly_wait(3)
         self._logger.info('크롬 드라이버 로딩 완료')
+        self._driver = driver
 
+    def init(self):
         self._logger.info('싸이월드 홈페이지 접속 중..')
         # 싸이월드 페이지 열기
-        driver.get('https://cyworld.com')
+        self._driver.get('https://cyworld.com')
         self._logger.info('싸이월드 홈페이지 접속 완료')
-        self._driver = driver
+        return self
 
     def login(self, user_email, user_password):
         self._logger.info('로그인 시도 중..')
@@ -66,6 +68,18 @@ class CyBot:
         #     pass
         elif 'timeline' in url:
             self._logger.success('로그인 성공')
+            return self
+
+    def home(self):
+        self._logger.info('마이 홈으로 이동 중..')
+        self._driver.find_element_by_css_selector('a.freak1').click()
+
+        if 'home' not in self._driver.current_url:
+            self._logger.error('마이 홈으로 이동할 수 없습니다')
+            exit()
+
+        self._logger.info('이동 완료')
+        return self
 
 if __name__ == '__main__':
 
@@ -73,4 +87,6 @@ if __name__ == '__main__':
         raise ValueError('계정 정보가 필요합니다.')
 
     bot = CyBot()
-    bot.login(user_email, user_password)
+    bot.init() \
+        .login(user_email, user_password) \
+        .home()
