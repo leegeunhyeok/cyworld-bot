@@ -29,26 +29,31 @@ from selenium.webdriver.common.keys import Keys
 # 유저 계정 정보 로드
 config = configparser.ConfigParser()
 config.read('config.ini')
-user_id = config['USER.id']
-user_password = config['USER.password']
+user_email = config.get('user', 'email')
+user_password = config.get('user', 'password')
 
 class CyBot:
     def __init__(self):
-        driver = webdriver.Chrome('./driver/chromedriver.exe')
+        ext = ''
+        if config.get('bot', 'chromedriver') == 'exe':
+            ext = '.exe'
+        driver = webdriver.Chrome('./driver/chromedriver' + ext)
         driver.implicitly_wait(3)
 
         # 싸이월드 페이지 열기
         driver.get('https://cyworld.com')
         self._driver = driver
 
-    def login(self, user_id, user_password):
-        self._driver.find_element_by_name('email').send_keys(user_id)
+    def login(self, user_email, user_password):
+        print('Login..')
+        self._driver.find_element_by_name('email').send_keys(user_email)
         self._driver.find_element_by_name('passwd').send_keys(user_password, Keys.RETURN)
+        print('a')
 
 if __name__ == '__main__':
 
-    if not (user_id and user_password):
+    if not (user_email and user_password):
         raise ValueError('계정 정보가 필요합니다.')
 
     bot = CyBot()
-    bot.login(user_id, user_password)
+    bot.login(user_email, user_password)
