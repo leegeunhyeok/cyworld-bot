@@ -24,6 +24,7 @@ SOFTWARE.
 
 import time
 import configparser
+from multiprocessing import Process, Manager, current_process
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -86,13 +87,27 @@ class CyBot:
         self._logger.success('이동 완료')
         return self
 
-    def feeder(self, process=2):
-        images = self._driver.find_elements_by_class_name('timeline_img')
-        print(images)
-        return self
+    def feeder(self, content_list):
+        while self._driver.find_element_by_css_selector('p.btn_list_more'):
+            contents = self._driver \
+                .find_elements_by_css_selector('input[name="contentID[]"]')
+            print(contents)
 
-    def downloader(self, process=2):
+            next_button = self._driver.find_element_by_css_selector('p.btn_list_more')
+            next_button.click()
+
+    def parser(self, content_list, image_list):
         pass
+
+    def downloader(self, image_list):
+        pass
+
+    def run(self, parser=2, downloader=2):
+        with Manager() as manager:
+            content_list = manager.list()
+            image_list = manager.list()
+            running = manager.Value('i', 1)
+            count = manager.Value('i', 0)
 
 if __name__ == '__main__':
 
@@ -103,5 +118,4 @@ if __name__ == '__main__':
     bot.init() \
         .login(user_email, user_password) \
         .home() \
-        .feeder(feeder) \
-        .downloader(downloader)
+        .run(parser=2, downloader=2)
