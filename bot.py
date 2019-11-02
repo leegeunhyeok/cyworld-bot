@@ -39,25 +39,21 @@ from src.downloader import Downloader
 # 유저 계정 정보 로드
 config = configparser.ConfigParser()
 config.read('config.ini')
-user_email = config.get('user', 'email')
-user_password = config.get('user', 'password')
-
-delay = config.get('bot', 'delay')
-parser = config.get('bot', 'parser')
-downloader = config.get('bot', 'downloader')
 
 class CyBot:
-    def __init__(self):
-        self._logger = Logger('test.txt')
+    def __init__(self, chromedriver, delay=3):
+        self._logger = Logger('cybot.log')
 
         ext = ''
         if config.get('bot', 'chromedriver') == 'exe':
             ext = '.exe'
 
         self._logger.info('크롬 드라이버 로딩 중..')
-        driver = webdriver.Chrome('./driver/chromedriver' + ext)
+        driver = webdriver.Chrome(chromedriver)
         driver.implicitly_wait(5)
         self._logger.info('크롬 드라이버 로딩 완료')
+
+        self._delay = delay
         self._driver = driver
         self._wait = WebDriverWait(driver, 10)
 
@@ -159,11 +155,18 @@ class CyBot:
 
 
 if __name__ == '__main__':
+    user_email = config.get('user', 'email')
+    user_password = config.get('user', 'password')
 
     if not (user_email and user_password):
         raise ValueError('계정 정보가 필요합니다.')
 
-    bot = CyBot()
+    chromedriver = config.get('bot', 'chromedriver')
+    delay = int(config.get('bot', 'delay'))
+    parser = int(config.get('bot', 'parser'))
+    downloader = int(config.get('bot', 'downloader'))
+
+    bot = CyBot(chromedriver, delay=delay)
     bot.init() \
         .login(user_email, user_password) \
         .home() \
