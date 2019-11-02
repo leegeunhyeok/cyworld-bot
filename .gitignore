@@ -1,2 +1,3 @@
 driver/chromedriver*
 *.pyc
+*.log
