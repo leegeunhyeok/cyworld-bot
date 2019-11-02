@@ -44,15 +44,13 @@ class CyBot:
     def __init__(self, chromedriver, delay=3):
         self._logger = Logger('cybot.log')
 
-        ext = ''
-        if config.get('bot', 'chromedriver') == 'exe':
-            ext = '.exe'
-
         self._logger.info('크롬 드라이버 로딩 중..')
         driver = webdriver.Chrome(chromedriver)
         driver.implicitly_wait(5)
         self._logger.info('크롬 드라이버 로딩 완료')
 
+        self._base_url = 'https://cy.cyworld.com'
+        self._user_id = ''
         self._delay = delay
         self._driver = driver
         self._wait = WebDriverWait(driver, 10)
@@ -85,7 +83,10 @@ class CyBot:
 
     def home(self):
         self._logger.info('마이 홈으로 이동 중..')
-        self._driver.find_element_by_css_selector('a.freak1').click()
+
+        profile = self._driver.find_element_by_css_selector('a.freak1')
+        self._user_id = profile.get_attribute('href').split('/').pop()
+        profile.click()
 
         if 'home' not in self._driver.current_url:
             self._logger.error('마이 홈으로 이동할 수 없습니다')
@@ -96,19 +97,30 @@ class CyBot:
 
 
     def feeder(self, content_list, running):
+        content_index = 0
+
         # 모든 타임라인 컨텐츠 영역 추출
         while self._driver.find_element_by_css_selector('p.btn_list_more'):
             contents = self._driver \
                 .find_elements_by_css_selector('input[name="contentID[]"]')
 
+            cid = contents[content_index].get_attribute('value')
+            content_url = '{}/home/{}/post/{}/layer'.format(self._base_url, self._user_id, cid)
+            self._logger.info('Feeder::', content_url)
+            content_list.append(content_url)
+
+            # 더 보기 버튼 대기
             next_button = self._wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'p.btn_list_more'))
             )
-            time.sleep(1)
+            time.sleep(self._delay)
 
+            # 더 보기 버튼을 클릭할 수 없는 경우 (마지막 페이지인 경우) 반복 종료
             if not (next_button.is_displayed() and next_button.is_enabled()):
+                running.value = 0
                 break
-
+            
+            # 다음버튼 클릭
             next_button.click()
 
 
@@ -127,31 +139,31 @@ class CyBot:
             parser_instance = Parser()
             downloader_instance = Downloader()
 
-            # 파서 프로세스 생성 및 시작
-            for idx in range(parser):
-                parser_process = Process(target=parser_instance.parser, \
-                    args=(content_list, image_list))
-                parser_process.name = 'Parser::' + str(idx)
-                parser_process.start()
-                processes.append(parser_process)
-                self._logger.info('Parser', str(idx), '프로세스 시작')
+            # # 파서 프로세스 생성 및 시작
+            # for idx in range(parser):
+            #     parser_process = Process(target=parser_instance.parser, \
+            #         args=(content_list, image_list))
+            #     parser_process.name = 'Parser::' + str(idx)
+            #     parser_process.start()
+            #     processes.append(parser_process)
+            #     self._logger.info('Parser', str(idx), '프로세스 시작')
 
-            # 다운로더 프로세스 생성 및 시작
-            for idx in range(downloader):
-                downloader_process = Process(target=downloader_instance.downloader, \
-                    args=(image_list,))
-                downloader_process.name = 'Downloader::' + str(idx)
-                downloader_process.start()
-                processes.append(downloader_process)
-                self._logger.info('Downloader', str(idx), '프로세스 시작')
+            # # 다운로더 프로세스 생성 및 시작
+            # for idx in range(downloader):
+            #     downloader_process = Process(target=downloader_instance.downloader, \
+            #         args=(image_list,))
+            #     downloader_process.name = 'Downloader::' + str(idx)
+            #     downloader_process.start()
+            #     processes.append(downloader_process)
+            #     self._logger.info('Downloader', str(idx), '프로세스 시작')
 
             # 피더 프로세스 시작
             self._logger.info('Feeder 프로세스 시작')
             self.feeder(content_list, running)
 
-            # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
-            for p in processes:
-                p.join()
+            # # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
+            # for p in processes:
+            #     p.join()
 
 
 if __name__ == '__main__':
