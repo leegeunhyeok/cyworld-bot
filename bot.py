@@ -100,10 +100,10 @@ class CyBot:
 
 
     def feeder(self, content_list, running):
+        # 모든 타임라인 컨텐츠 영역 추출
         while self._driver.find_element_by_css_selector('p.btn_list_more'):
             contents = self._driver \
                 .find_elements_by_css_selector('input[name="contentID[]"]')
-            # print(contents)
 
             next_button = self._wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, 'p.btn_list_more'))
@@ -117,15 +117,21 @@ class CyBot:
 
 
     def run(self, parser=2, downloader=2):
+        # 멀티 프로세싱 처리를 위한 매니저
         with Manager() as manager:
+            # 프로세스 목록
             processes = []
+
+            # 공유 메모리 변수
             content_list = manager.list()
             image_list = manager.list()
             running = manager.Value('i', 1)
 
+            # 파서, 다운로더 인스턴스
             parser_instance = Parser()
             downloader_instance = Downloader()
 
+            # 파서 프로세스 생성 및 시작
             for idx in range(parser):
                 parser_process = Process(target=parser_instance.parser, \
                     args=(content_list, image_list))
@@ -134,6 +140,7 @@ class CyBot:
                 processes.append(parser_process)
                 self._logger.info('Parser', str(idx), '프로세스 시작')
 
+            # 다운로더 프로세스 생성 및 시작
             for idx in range(downloader):
                 downloader_process = Process(target=downloader_instance.downloader, \
                     args=(image_list,))
@@ -142,9 +149,11 @@ class CyBot:
                 processes.append(downloader_process)
                 self._logger.info('Downloader', str(idx), '프로세스 시작')
 
+            # 피더 프로세스 시작
             self._logger.info('Feeder 프로세스 시작')
             self.feeder(content_list, running)
 
+            # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
             for p in processes:
                 p.join()
 
