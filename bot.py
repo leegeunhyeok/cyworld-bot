@@ -87,7 +87,7 @@ class CyBot:
         self._logger.success('이동 완료')
         return self
 
-    def feeder(self, content_list):
+    def feeder(self, content_list, running):
         while self._driver.find_element_by_css_selector('p.btn_list_more'):
             contents = self._driver \
                 .find_elements_by_css_selector('input[name="contentID[]"]')
