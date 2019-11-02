@@ -26,9 +26,15 @@ import time
 import configparser
 from multiprocessing import Process, Manager, current_process
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from src.logger import Logger
+from src.parser import Parser
+from src.downloader import Downloader
+
 
 # 유저 계정 정보 로드
 config = configparser.ConfigParser()
@@ -36,7 +42,8 @@ config.read('config.ini')
 user_email = config.get('user', 'email')
 user_password = config.get('user', 'password')
 
-feeder = config.get('bot', 'feeder')
+delay = config.get('bot', 'delay')
+parser = config.get('bot', 'parser')
 downloader = config.get('bot', 'downloader')
 
 class CyBot:
@@ -49,9 +56,11 @@ class CyBot:
 
         self._logger.info('크롬 드라이버 로딩 중..')
         driver = webdriver.Chrome('./driver/chromedriver' + ext)
-        driver.implicitly_wait(3)
+        driver.implicitly_wait(5)
         self._logger.info('크롬 드라이버 로딩 완료')
         self._driver = driver
+        self._wait = WebDriverWait(driver, 10)
+
 
     def init(self):
         self._logger.info('싸이월드 홈페이지 접속 중..')
@@ -59,6 +68,7 @@ class CyBot:
         self._driver.get('https://cyworld.com')
         self._logger.success('싸이월드 홈페이지 접속 완료')
         return self
+
 
     def login(self, user_email, user_password):
         self._logger.info('로그인 시도 중..')
@@ -76,6 +86,7 @@ class CyBot:
             self._logger.success('로그인 성공')
             return self
 
+
     def home(self):
         self._logger.info('마이 홈으로 이동 중..')
         self._driver.find_element_by_css_selector('a.freak1').click()
@@ -87,27 +98,56 @@ class CyBot:
         self._logger.success('이동 완료')
         return self
 
+
     def feeder(self, content_list, running):
         while self._driver.find_element_by_css_selector('p.btn_list_more'):
             contents = self._driver \
                 .find_elements_by_css_selector('input[name="contentID[]"]')
-            print(contents)
+            # print(contents)
 
-            next_button = self._driver.find_element_by_css_selector('p.btn_list_more')
+            next_button = self._wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'p.btn_list_more'))
+            )
+            time.sleep(1)
+
+            if not (next_button.is_displayed() and next_button.is_enabled()):
+                break
+
             next_button.click()
 
-    def parser(self, content_list, image_list):
-        pass
-
-    def downloader(self, image_list):
-        pass
 
     def run(self, parser=2, downloader=2):
         with Manager() as manager:
+            processes = []
             content_list = manager.list()
             image_list = manager.list()
             running = manager.Value('i', 1)
-            count = manager.Value('i', 0)
+
+            parser_instance = Parser()
+            downloader_instance = Downloader()
+
+            for idx in range(parser):
+                parser_process = Process(target=parser_instance.parser, \
+                    args=(content_list, image_list))
+                parser_process.name = 'Parser::' + str(idx)
+                parser_process.start()
+                processes.append(parser_process)
+                self._logger.info('Parser', str(idx), '프로세스 시작')
+
+            for idx in range(downloader):
+                downloader_process = Process(target=downloader_instance.downloader, \
+                    args=(image_list,))
+                downloader_process.name = 'Downloader::' + str(idx)
+                downloader_process.start()
+                processes.append(downloader_process)
+                self._logger.info('Downloader', str(idx), '프로세스 시작')
+
+            self._logger.info('Feeder 프로세스 시작')
+            self.feeder(content_list, running)
+
+            for p in processes:
+                p.join()
+
 
 if __name__ == '__main__':
 
@@ -118,4 +158,4 @@ if __name__ == '__main__':
     bot.init() \
         .login(user_email, user_password) \
         .home() \
-        .run(parser=2, downloader=2)
+        .run(parser=parser, downloader=downloader)
