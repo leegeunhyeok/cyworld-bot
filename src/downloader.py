@@ -31,14 +31,14 @@ class Downloader:
         self._logger = logger
 
 
-    def downloader(self, image_list, count, parser_running):
+    def downloader(self, image_list, count, lock, parser_running):
         name = current_process().name
 
         while parser_running.value or len(image_list) != 0:
             try:
                 if len(image_list) != 0:
                     # 공유 메모리 변수 락
-                    with count.get_lock():
+                    with lock:
                         # 현재 카운트 저장 및 1증가
                         current_count = count.value
                         count.value += 1
