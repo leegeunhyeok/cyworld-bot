@@ -41,3 +41,6 @@ def extract_number(s):
 
 def extract_date(s):
     return re.search(r'\d{4}.\d{2}.\d{2}', s).group()
+
+def to_valid_filename(s):
+    return re.sub(r'[^a-zA-Z0-9가-힣]', '_', s)
