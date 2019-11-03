@@ -1,3 +1,7 @@
 driver/chromedriver*
 *.pyc
 *.log
+
+*.gif
+*.jpg
+*.png
