@@ -83,3 +83,4 @@ class Parser:
                 self._logger.error(e)
 
         parser_running.value = 0
+        self._logger.info(name, '종료')
