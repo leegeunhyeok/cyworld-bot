@@ -31,6 +31,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from src.util import EC_or
 from src.logger import Logger
 from src.parser import Parser
 from src.downloader import Downloader
@@ -54,7 +55,7 @@ class CyBot:
         self._user_id = ''
         self._delay = delay
         self._driver = driver
-        self._wait = WebDriverWait(driver, 10)
+        self._wait = WebDriverWait(driver, 5)
 
 
     def init(self):
@@ -69,25 +70,40 @@ class CyBot:
         self._logger.info('로그인 시도 중..')
         self._driver.find_element_by_name('email').send_keys(user_email)
         self._driver.find_element_by_name('passwd').send_keys(user_password, Keys.RETURN)
-        time.sleep(3)
+
+        prev_url = self._driver.current_url
+        try:
+            self._wait.until(EC_or(
+                EC.url_changes(prev_url),
+                EC.invisibility_of_element( \
+                    (By.CSS_SELECTOR, '.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable'))
+            ))
+        except:
+            self._logger.error('시간이 초과되었습니다')
+            exit()
 
         url = self._driver.current_url
-        if 'cyMain' in url:
-            self._logger.error('사용자 정보를 다시 확인해주세요')
-            exit()
-        # elif '비밀번호 변경 요청' in url:
-        #     pass
-        elif 'timeline' in url:
+        if 'timeline' in url:
             self._logger.success('로그인 성공')
             return self
+        else:
+            self._logger.error('사용자 정보를 확인해주세요')
+            exit()
 
 
     def home(self):
         self._logger.info('마이 홈으로 이동 중..')
 
+        prev_url = self._driver.current_url
         profile = self._driver.find_element_by_css_selector('a.freak1')
         self._user_id = profile.get_attribute('href').split('/').pop()
         profile.click()
+
+        try:
+            self._wait.until(EC.url_changes(prev_url))
+        except:
+            self._logger.error('시간이 초과되었습니다')
+            exit()
 
         if 'home' not in self._driver.current_url:
             self._logger.error('마이 홈으로 이동할 수 없습니다')
