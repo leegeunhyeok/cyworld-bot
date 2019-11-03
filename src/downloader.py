@@ -63,11 +63,11 @@ class Downloader:
                     # 파일 저장
                     with open(filename, 'wb') as image:
                         image.write(res.content)
-                        self._logger.info(name, filename)
+                        self._logger.info(name, filename, '다운로드 됨')
 
                 # 싸이월드 서버 부하 방지를 위해 잠시 대기
-                time.sleep(3)
+                time.sleep(1)
             except Exception as e:
-                self._logger.error(e)
+                self._logger.error(str(e))
 
         self._logger.info(name, '종료')
