@@ -142,8 +142,9 @@ class CyBot:
             # 다음버튼 클릭
             next_button.click()
 
-        self._logger.info('Feeder:: 종료')
         running.value = 0
+        self._driver.close()
+        self._logger.info('Feeder:: 종료')
 
 
     def run(self, parser=2, downloader=2):

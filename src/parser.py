@@ -78,9 +78,10 @@ class Parser:
                             self._logger.info(name, '{}_{} 포스트 파싱 됨'.format(post_date, title))
 
                     # 싸이월드 서버 부하 방지를 위해 잠시 대기
-                    time.sleep(3)
+                    time.sleep(1)
             except Exception as e:
                 self._logger.error(e)
 
         parser_running.value = 0
+        parser_driver.close()
         self._logger.info(name, '종료')
