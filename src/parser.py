@@ -47,7 +47,7 @@ class Parser:
 
         self._logger.info(current_process().name, '크롬 드라이버 로딩 완료')
 
-        while(feeder_running.value):
+        while feeder_running.value or len(content_list) != 0:
             try:
                 if len(content_list) != 0:
                     # 공유 리스트에서 게시물 URL 추출 및 접속
