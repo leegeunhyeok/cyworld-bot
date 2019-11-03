@@ -74,9 +74,9 @@ class Parser:
                                 'src': img.get_attribute('src')
                             })
                             self._logger.info('{}_{} 포스트 파싱 됨'.format(post_date, title))
-                else:
-                    # 만약 리스트가 비어있는 경우 1초 대기 후 다시 시도
-                    time.sleep(1)
+
+                    # 싸이월드 서버 부하 방지를 위해 잠시 대기
+                    time.sleep(3)
             except Exception as e:
                 self._logger.error(e)
 
