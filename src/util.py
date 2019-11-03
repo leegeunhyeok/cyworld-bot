@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
 import re
 
 class EC_or:
@@ -37,3 +38,6 @@ class EC_or:
 
 def extract_number(s):
     return re.findall(r'\d+', s)
+
+def extract_date(s):
+    return re.search(r'\d{4}.\d{2}.\d{2}', s).group()
