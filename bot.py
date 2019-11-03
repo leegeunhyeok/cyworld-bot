@@ -68,10 +68,11 @@ class CyBot:
 
     def login(self, user_email, user_password):
         self._logger.info('로그인 시도 중..')
+
+        prev_url = self._driver.current_url
         self._driver.find_element_by_name('email').send_keys(user_email)
         self._driver.find_element_by_name('passwd').send_keys(user_password, Keys.RETURN)
 
-        prev_url = self._driver.current_url
         try:
             self._wait.until(EC_or(
                 EC.url_changes(prev_url),
