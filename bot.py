@@ -148,6 +148,9 @@ class CyBot:
 
 
     def run(self, parser=2, downloader=2):
+        self._logger.info('이미지 다운로드 작업 시작')
+        start = time.time()
+
         # 멀티 프로세싱 처리를 위한 매니저
         with Manager() as manager:
             # 프로세스 목록
@@ -157,6 +160,7 @@ class CyBot:
             content_list = manager.list()
             image_list = manager.list()
             count = manager.Value('i', 0)
+            lock = manager.Lock()
             feeder_running = manager.Value('i', 1)
             parser_running = manager.Value('i', 1)
 
@@ -183,7 +187,7 @@ class CyBot:
             for idx in range(downloader):
                 downloader_instance = Downloader(downloader_logger)
                 downloader_process = Process(target=downloader_instance.downloader, \
-                    args=(image_list, count, parser_running))
+                    args=(image_list, count, lock, parser_running))
                 downloader_process.name = 'Downloader::' + str(idx)
                 downloader_process.start()
                 processes.append(downloader_process)
@@ -196,6 +200,9 @@ class CyBot:
             # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
             for p in processes:
                 p.join()
+
+            self._logger.info('작업 소요시간: {.2f}초'.format(time.time() - start))
+            self._logger.info('전체 이미지 수: {}'.format(count.value))
 
 
 if __name__ == '__main__':
