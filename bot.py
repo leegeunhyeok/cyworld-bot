@@ -119,12 +119,14 @@ class CyBot:
         # 모든 타임라인 컨텐츠 영역 추출
         while self._driver.find_element_by_css_selector('p.btn_list_more'):
             contents = self._driver \
-                .find_elements_by_css_selector('input[name="contentID[]"]')
+                .find_elements_by_css_selector('input[name="contentID[]"]')[content_index:]
 
-            cid = contents[content_index].get_attribute('value')
-            content_url = '{}/home/{}/post/{}/layer'.format(self._base_url, self._user_id, cid)
-            self._logger.info('Feeder::', content_url)
-            content_list.append(content_url)
+            for content in contents:
+                cid = content.get_attribute('value')
+                content_url = '{}/home/{}/post/{}/layer'.format(self._base_url, self._user_id, cid)
+                self._logger.info('Feeder::', content_url)
+                content_list.append(content_url)
+                content_index += 1
 
             # 더 보기 버튼 대기
             next_button = self._wait.until(
@@ -139,6 +141,9 @@ class CyBot:
             
             # 다음버튼 클릭
             next_button.click()
+
+        self._logger.info('Feeder:: 종료')
+        running.value = 0
 
 
     def run(self, parser=2, downloader=2):
@@ -183,7 +188,7 @@ class CyBot:
             #     self._logger.info('Downloader', str(idx), '프로세스 시작')
 
             # 피더 프로세스 시작
-            self._logger.info('Feeder 프로세스 시작')
+            self._logger.info('Feeder 시작')
             self.feeder(content_list, feeder_running)
 
             # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
