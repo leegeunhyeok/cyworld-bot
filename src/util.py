@@ -44,3 +44,7 @@ def extract_date(s):
 
 def to_valid_filename(s):
     return re.sub(r'[^a-zA-Z0-9가-힣]', '_', s)
+
+def update_size(s):
+    sh = re.sub(r'height=\d{0,10}', 'height=10000', s)
+    return re.sub(r'width=\d{0,10}', 'width=10000', sh)

@@ -27,7 +27,7 @@ from multiprocessing import current_process
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
-from src.util import extract_date, to_valid_filename
+from src.util import extract_date, to_valid_filename, update_size
 
 class Parser:
     def __init__(self, chromedriver, cookie, logger, delay):
@@ -51,7 +51,7 @@ class Parser:
             try:
                 if len(content_list) != 0:
                     # 공유 리스트에서 게시물 URL 추출 및 접속
-                    target_url = content_list.pop()
+                    target_url = content_list.pop(0)
                     self._logger.info(current_process().name, target_url)
                     parser_driver.get(target_url)
 
@@ -62,16 +62,17 @@ class Parser:
                     post_date = extract_date(date.get_attribute('innerText'))
 
                     title = to_valid_filename(title.get_attribute('innerText'))
-
                     # 이미지 목록 추출
                     for image in images:
                         imgs = image.find_elements_by_tag_name('img')
 
                         for img in imgs:
+                            src = update_size(img.get_attribute('src'))
+
                             image_list.append({
                                 'title': title,
                                 'date': post_date,
-                                'src': img.get_attribute('src')
+                                'src': src
                             })
                             self._logger.info('{}_{} 포스트 파싱 됨'.format(post_date, title))
 
