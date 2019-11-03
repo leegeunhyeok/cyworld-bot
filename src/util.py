@@ -23,5 +23,17 @@ SOFTWARE.
 '''
 import re
 
+class EC_or:
+    def __init__(self, *args):
+        self.ecs = args
+    
+    def __call__(self, driver):
+        for ec in self.ecs:
+            try:
+                if ec(driver):
+                    return True
+            except:
+                pass
+
 def extract_number(s):
     return re.findall(r'\d+', s)
