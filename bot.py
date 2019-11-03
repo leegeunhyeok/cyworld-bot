@@ -201,7 +201,7 @@ class CyBot:
             for p in processes:
                 p.join()
 
-            self._logger.info('작업 소요시간: {.2f}초'.format(time.time() - start))
+            self._logger.info('작업 소요시간: {}초'.format(round(time.time() - start, 2)))
             self._logger.info('전체 이미지 수: {}'.format(count.value))
 
 
