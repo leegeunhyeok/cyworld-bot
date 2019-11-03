@@ -153,21 +153,24 @@ class CyBot:
             feeder_running = manager.Value('i', 1)
             parser_running = manager.Value('i', 1)
 
-            # 파서, 다운로더 인스턴스
-            parser_instance = Parser(self._logger, self._chromedriver, self._delay)
-            downloader_instance = Downloader()
+            parser_logger = Logger('cybot_parser.log')
+            downloader_logger = Logger('cybot_downloader.log')
+            main_cookies = self._driver.get_cookies()
 
-            # # 파서 프로세스 생성 및 시작
-            # for idx in range(parser):
-            #     parser_process = Process(target=parser_instance.parser, \
-            #         args=(content_list, image_list))
-            #     parser_process.name = 'Parser::' + str(idx)
-            #     parser_process.start()
-            #     processes.append(parser_process)
-            #     self._logger.info('Parser', str(idx), '프로세스 시작')
+            # 파서 프로세스 생성 및 시작
+            for idx in range(parser):
+                parser_instance = Parser(self._chromedriver, main_cookies, parser_logger, self._delay)
+                parser_process = Process(target=parser_instance.parse, \
+                    args=(content_list, image_list, feeder_running, parser_running)
+                )
+                parser_process.name = 'Parser::' + str(idx)
+                parser_process.start()
+                processes.append(parser_process)
+                self._logger.info('Parser', str(idx), '프로세스 시작')
 
             # # 다운로더 프로세스 생성 및 시작
             # for idx in range(downloader):
+            #     downloader_process = Downloader()
             #     downloader_process = Process(target=downloader_instance.downloader, \
             #         args=(image_list,))
             #     downloader_process.name = 'Downloader::' + str(idx)
@@ -179,9 +182,9 @@ class CyBot:
             self._logger.info('Feeder 프로세스 시작')
             self.feeder(content_list, feeder_running)
 
-            # # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
-            # for p in processes:
-            #     p.join()
+            # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
+            for p in processes:
+                p.join()
 
 
 if __name__ == '__main__':
