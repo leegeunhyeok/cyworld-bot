@@ -38,21 +38,22 @@ class Parser:
 
 
     def parse(self, content_list, image_list, feeder_running, parser_running):
-        self._logger.info(current_process().name, '크롬 드라이버 로딩 중..')
+        name = current_process().name
+        self._logger.info(name, '크롬 드라이버 로딩 중..')
         parser_driver = webdriver.Chrome(self._chromedriver)
         parser_driver.implicitly_wait(5)
         parser_driver.get('https://cyworld.com')
         for cookie in self._cookie:
             parser_driver.add_cookie(cookie)
 
-        self._logger.info(current_process().name, '크롬 드라이버 로딩 완료')
+        self._logger.info(name, '크롬 드라이버 로딩 완료')
 
         while feeder_running.value or len(content_list) != 0:
             try:
                 if len(content_list) != 0:
                     # 공유 리스트에서 게시물 URL 추출 및 접속
                     target_url = content_list.pop(0)
-                    self._logger.info(current_process().name, target_url)
+                    self._logger.info(name, target_url)
                     parser_driver.get(target_url)
 
                     # 필요한 데이터 추출
@@ -74,7 +75,7 @@ class Parser:
                                 'date': post_date,
                                 'src': src
                             })
-                            self._logger.info('{}_{} 포스트 파싱 됨'.format(post_date, title))
+                            self._logger.info(name, '{}_{} 포스트 파싱 됨'.format(post_date, title))
 
                     # 싸이월드 서버 부하 방지를 위해 잠시 대기
                     time.sleep(3)
