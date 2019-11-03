@@ -156,10 +156,14 @@ class CyBot:
             parser_logger = Logger('cybot_parser.log')
             downloader_logger = Logger('cybot_downloader.log')
             main_cookies = self._driver.get_cookies()
+            cookie = []
+
+            for c in main_cookies:
+                cookie.append({ 'name': c['name'], 'value': c['value'] })
 
             # 파서 프로세스 생성 및 시작
             for idx in range(parser):
-                parser_instance = Parser(self._chromedriver, main_cookies, parser_logger, self._delay)
+                parser_instance = Parser(self._chromedriver, cookie, parser_logger, self._delay)
                 parser_process = Process(target=parser_instance.parse, \
                     args=(content_list, image_list, feeder_running, parser_running)
                 )
