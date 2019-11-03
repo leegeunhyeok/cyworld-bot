@@ -155,6 +155,7 @@ class CyBot:
             # 공유 메모리 변수
             content_list = manager.list()
             image_list = manager.list()
+            count = manager.Value('i', 0)
             feeder_running = manager.Value('i', 1)
             parser_running = manager.Value('i', 1)
 
@@ -177,15 +178,15 @@ class CyBot:
                 processes.append(parser_process)
                 self._logger.info('Parser', str(idx), '프로세스 시작')
 
-            # # 다운로더 프로세스 생성 및 시작
-            # for idx in range(downloader):
-            #     downloader_process = Downloader()
-            #     downloader_process = Process(target=downloader_instance.downloader, \
-            #         args=(image_list,))
-            #     downloader_process.name = 'Downloader::' + str(idx)
-            #     downloader_process.start()
-            #     processes.append(downloader_process)
-            #     self._logger.info('Downloader', str(idx), '프로세스 시작')
+            # 다운로더 프로세스 생성 및 시작
+            for idx in range(downloader):
+                downloader_instance = Downloader(downloader_logger)
+                downloader_process = Process(target=downloader_instance.downloader, \
+                    args=(image_list, count, parser_running))
+                downloader_process.name = 'Downloader::' + str(idx)
+                downloader_process.start()
+                processes.append(downloader_process)
+                self._logger.info('Downloader', str(idx), '프로세스 시작')
 
             # 피더 프로세스 시작
             self._logger.info('Feeder 시작')
