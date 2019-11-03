@@ -49,6 +49,7 @@ class CyBot:
         driver.implicitly_wait(5)
         self._logger.info('크롬 드라이버 로딩 완료')
 
+        self._chromedriver = chromedriver
         self._base_url = 'https://cy.cyworld.com'
         self._user_id = ''
         self._delay = delay
@@ -133,10 +134,11 @@ class CyBot:
             # 공유 메모리 변수
             content_list = manager.list()
             image_list = manager.list()
-            running = manager.Value('i', 1)
+            feeder_running = manager.Value('i', 1)
+            parser_running = manager.Value('i', 1)
 
             # 파서, 다운로더 인스턴스
-            parser_instance = Parser()
+            parser_instance = Parser(self._logger, self._chromedriver, self._delay)
             downloader_instance = Downloader()
 
             # # 파서 프로세스 생성 및 시작
@@ -159,7 +161,7 @@ class CyBot:
 
             # 피더 프로세스 시작
             self._logger.info('Feeder 프로세스 시작')
-            self.feeder(content_list, running)
+            self.feeder(content_list, feeder_running)
 
             # # 파서, 다운로더 프로세스가 종료되지않은 경우 대기
             # for p in processes:
