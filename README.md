@@ -38,7 +38,7 @@
 
 <img src="./guide/4.png">
 
-[크롬 드라이버 다운로드](https://www.google.com/intl/ko/chrome) 페이지에 접속하여 `3번` 과정에서 메모한 버전과 일치하는 드라이버를 다운로드 받습니다.
+[크롬 드라이버 다운로드](https://chromedriver.chromium.org/downloads) 페이지에 접속하여 `3번` 과정에서 메모한 버전과 일치하는 드라이버를 다운로드 받습니다.
 
 <img src="./guide/5.png">
 
