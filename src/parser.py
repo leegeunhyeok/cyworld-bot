@@ -21,13 +21,39 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
 import time
+from multiprocessing import current_process
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
 
 class Parser:
-    def __init__(self):
-        pass
+    def __init__(self, chromedriver, cookie, logger, delay):
+        self._chromedriver = chromedriver
+        self._cookie = cookie
+        self._logger = logger
+        self._delay = delay
 
-    def parser(self, content_list, image_list):
-        while(True):
-            print('Parser!!!')
-            time.sleep(1)
+
+    def parse(self, content_list, image_list, feeder_running, parser_running):
+        self._logger.info(current_process().name, '크롬 드라이버 로딩 중..')
+        parser_driver = webdriver.Chrome(self._chromedriver)
+        parser_driver.implicitly_wait(5)
+        parser_driver.get('https://cyworld.com')
+        for cookie in self._cookie:
+            parser_driver.add_cookie(cookie)
+
+        self._logger.info(current_process().name, '크롬 드라이버 로딩 완료')
+
+        while(feeder_running.value):
+            try:
+                if len(content_list) != 0:
+                    target_url = content_list.pop()
+                    self._logger.info(current_process().name, target_url)
+                    parser_driver.get(target_url)
+                else:
+                    time.sleep(1)
+            except Exception as e:
+                self._logger.error(e)
+
+        parser_running.value = 0
