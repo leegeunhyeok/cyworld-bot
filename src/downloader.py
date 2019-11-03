@@ -21,13 +21,53 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
 import time
+import requests
+from multiprocessing import current_process
 
 class Downloader:
-    def __init__(self):
-        pass
+    def __init__(self, logger):
+        self._logger = logger
 
-    def downloader(self, image_list):
-        while(True):
-            print('Downloader!!!')
-            time.sleep(1)
+
+    def downloader(self, image_list, count, parser_running):
+        name = current_process().name
+
+        while parser_running.value or len(image_list) != 0:
+            try:
+                if len(image_list) != 0:
+                    # 공유 메모리 변수 락
+                    with count.get_lock():
+                        # 현재 카운트 저장 및 1증가
+                        current_count = count.value
+                        count.value += 1
+
+                    # 이미지 데이터 추출
+                    image_data = image_list.pop(0)
+
+                    # 이미지 다운로드
+                    res = requests.get(image_data['src'])
+
+                    # 파일 확장자
+                    ext = image_data['src'].split('.').pop()
+
+                    # 저장 파일명 생성
+                    filename = './images/{}_{}_{}.{}'.format(
+                        image_data['date'],
+                        current_count,
+                        image_data['title'],
+                        ext
+                    )
+
+                    # 파일 저장
+                    with open(filename, 'wb') as image:
+                        image.write(res.content)
+                        self._logger.info(name, filename)
+
+                # 싸이월드 서버 부하 방지를 위해 잠시 대기
+                time.sleep(3)
+            except Exception as e:
+                self._logger.error(e)
+
+        self._logger.info(name, '종료')
