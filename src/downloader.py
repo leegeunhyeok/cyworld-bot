@@ -31,7 +31,7 @@ class Downloader:
         self._logger = logger
 
 
-    def downloader(self, image_list, count, lock, parser_running):
+    def download(self, image_list, count, lock, parser_running):
         name = current_process().name
 
         while parser_running.value or len(image_list) != 0:
