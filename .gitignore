@@ -5,5 +5,7 @@ driver/chromedriver*
 images/*.gif
 images/*.jpg
 images/*.png
+posts/*.txt
 
 .DS_Store
+.vscode
