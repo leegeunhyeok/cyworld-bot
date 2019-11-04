@@ -96,9 +96,13 @@ class CyBot:
         self._logger.info('마이 홈으로 이동 중..')
 
         prev_url = self._driver.current_url
+
+        # 유저 고유번호 추출
         profile = self._driver.find_element_by_css_selector('a.freak1')
         self._user_id = profile.get_attribute('href').split('/').pop()
-        profile.click()
+
+        # 프로필 사진 영역 클릭
+        self._driver.find_element_by_id('imggnbuser').click()
 
         try:
             self._wait.until(EC.url_changes(prev_url))
