@@ -48,3 +48,6 @@ def to_valid_filename(s):
 def update_size(s):
     sh = re.sub(r'height=\d{0,10}', 'height=10000', s)
     return re.sub(r'width=\d{0,10}', 'width=10000', sh)
+
+def clean_text(s):
+    return re.sub(r'\s{2,}', '', s)
