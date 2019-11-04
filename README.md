@@ -94,6 +94,7 @@ python3 bot.py
 <img src="./guide/7.png">
 
 - 결과 이미지는 images 폴더 내에 `날짜_번호_제목` 형식으로 저장됩니다
+- 결과 텍스트는 posts 폴더 내에 `날짜_번호_제목` 형식으로 저장됩니다
 
 ## 이슈
 사용 중 문제가 발생할 경우 [이슈](https://github.com/leegeunhyeok/cyworld-bot/issues) 남겨주세요 😊
