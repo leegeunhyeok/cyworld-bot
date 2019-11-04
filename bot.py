@@ -124,11 +124,14 @@ class CyBot:
         # 모든 타임라인 컨텐츠 영역 추출
         while self._driver.find_element_by_css_selector('p.btn_list_more'):
             contents = self._driver \
-                .find_elements_by_css_selector('input[name="contentID[]"]')[content_index:]
+                .find_elements_by_css_selector(
+                    'input[name="contentID[]"]'
+                )[content_index:]
 
             for content in contents:
                 cid = content.get_attribute('value')
-                content_url = '{}/home/{}/post/{}/layer'.format(self._base_url, self._user_id, cid)
+                content_url = '{}/home/{}/post/{}/layer' \
+                    .format(self._base_url, self._user_id, cid)
                 self._logger.info('Feeder::', content_url)
                 content_list.append(content_url)
                 content_index += 1
@@ -183,9 +186,16 @@ class CyBot:
 
             # 파서 프로세스 생성 및 시작
             for idx in range(parser):
-                parser_instance = Parser(self._chromedriver, cookie, parser_logger, self._delay)
-                parser_process = Process(target=parser_instance.parse, \
-                    args=(content_list, image_list, feeder_running, parser_running)
+                parser_instance = Parser(
+                    self._chromedriver, cookie, parser_logger, self._delay)
+                parser_process = Process(
+                    target=parser_instance.parse, \
+                    args=(
+                        content_list,
+                        image_list,
+                        feeder_running,
+                        parser_running
+                    )
                 )
                 parser_process.name = 'Parser::' + str(idx)
                 parser_process.start()
@@ -195,7 +205,8 @@ class CyBot:
             # 다운로더 프로세스 생성 및 시작
             for idx in range(downloader):
                 downloader_instance = Downloader(downloader_logger)
-                downloader_process = Process(target=downloader_instance.downloader, \
+                downloader_process = Process(
+                    target=downloader_instance.download, \
                     args=(image_list, count, lock, parser_running))
                 downloader_process.name = 'Downloader::' + str(idx)
                 downloader_process.start()
@@ -210,7 +221,8 @@ class CyBot:
             for p in processes:
                 p.join()
 
-            self._logger.info('작업 소요시간: {}초'.format(round(time.time() - start, 2)))
+            self._logger.info('작업 소요시간: {}초' \
+                .format(round(time.time() - start, 2)))
             self._logger.info('전체 이미지 수: {}'.format(count.value))
 
 
