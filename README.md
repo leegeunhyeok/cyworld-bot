@@ -55,7 +55,7 @@ CMD 혹은 터미널 등을 소스코드가 있는 폴더에서 열어 아래 �
 - [파이썬](https://www.python.org/downloads/release/python-365)이 설치되어 있어야 합니다!
 
 ```bash
-pip3 install -r requirement.txt
+pip3 install -r requirements.txt
 ```
 
 ### 5. 기본 설정
