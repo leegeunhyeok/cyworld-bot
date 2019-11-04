@@ -57,12 +57,21 @@ class Parser:
                     parser_driver.get(target_url)
 
                     # 필요한 데이터 추출
-                    date = parser_driver.find_element_by_css_selector('div.view1 p')
-                    images = parser_driver.find_elements_by_css_selector('section.imageBox')
+                    date = parser_driver \
+                        .find_element_by_css_selector('div.view1 p')
+                    images = parser_driver \
+                        .find_elements_by_css_selector('section.imageBox')
+                    texts = parser_driver \
+                        .find_elements_by_css_selector('section.textBox')
+
                     title = parser_driver.find_element_by_id('cyco-post-title')
+                    title = to_valid_filename(title.get_attribute('innerText'))
                     post_date = extract_date(date.get_attribute('innerText'))
 
-                    title = to_valid_filename(title.get_attribute('innerText'))
+                    post_text = '[ {} ]\n\n'.format(title)
+                    for text in texts:
+                        post_text += text.get_attribute('innerText') + '\n'
+
                     # 이미지 목록 추출
                     for image in images:
                         imgs = image.find_elements_by_tag_name('img')
@@ -73,9 +82,14 @@ class Parser:
                             image_list.append({
                                 'title': title,
                                 'date': post_date,
+                                'content': post_text,
                                 'src': src
                             })
-                            self._logger.info(name, '{}_{} 포스트 파싱 됨'.format(post_date, title))
+
+                            self._logger.info(
+                                name, '{}_{} 포스트 파싱 됨'.format(
+                                    post_date, title)
+                            )
 
                     # 싸이월드 서버 부하 방지를 위해 잠시 대기
                     time.sleep(1)
