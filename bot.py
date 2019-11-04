@@ -134,10 +134,14 @@ class CyBot:
                 content_index += 1
 
             # 더 보기 버튼 대기
-            next_button = self._wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'p.btn_list_more'))
-            )
-            time.sleep(self._delay)
+            try:
+                next_button = self._wait.until(
+                    EC.element_to_be_clickable(
+                        (By.CSS_SELECTOR, 'p.btn_list_more'))
+                )
+                time.sleep(self._delay)
+            except:
+                pass
 
             # 더 보기 버튼을 클릭할 수 없는 경우 (마지막 페이지인 경우) 반복 종료
             if not (next_button.is_displayed() and next_button.is_enabled()):
