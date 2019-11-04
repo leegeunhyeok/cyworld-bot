@@ -27,7 +27,7 @@ from multiprocessing import current_process
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
-from src.util import extract_date, to_valid_filename, update_size
+from src.util import extract_date, to_valid_filename, update_size, clean_text
 
 class Parser:
     def __init__(self, chromedriver, cookie, logger, delay):
@@ -64,13 +64,24 @@ class Parser:
                     texts = parser_driver \
                         .find_elements_by_css_selector('section.textBox')
 
-                    title = parser_driver.find_element_by_id('cyco-post-title')
-                    title = to_valid_filename(title.get_attribute('innerText'))
+                    # 원본 제목
+                    origin_title = parser_driver \
+                        .find_element_by_id('cyco-post-title')
+
+                    # 파일 저장을 위해 후차리한 제목 (파일명)
+                    title = to_valid_filename(
+                        origin_title.get_attribute('innerText'))
+
+                    # 게시글 날짜 업로드 날짜
                     post_date = extract_date(date.get_attribute('innerText'))
 
-                    post_text = '[ {} ]\n\n'.format(title)
+                    # 게시글 데이터 병합
+                    post_text = '[ {} ]\n\n'.format(origin_title)
                     for text in texts:
-                        post_text += text.get_attribute('innerText') + '\n'
+                        current_text = text.get_attribute('innerText').strip()
+
+                        if len(current_text):
+                            post_text += clean_text(current_text) + '\n'
 
                     # 이미지 목록 추출
                     for image in images:
