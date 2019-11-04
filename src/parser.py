@@ -65,18 +65,18 @@ class Parser:
                         .find_elements_by_css_selector('section.textBox')
 
                     # 원본 제목
-                    origin_title = parser_driver \
-                        .find_element_by_id('cyco-post-title')
+                    title = parser_driver \
+                        .find_element_by_id('cyco-post-title') \
+                        .get_attribute('innerText')
 
-                    # 파일 저장을 위해 후차리한 제목 (파일명)
-                    title = to_valid_filename(
-                        origin_title.get_attribute('innerText'))
+                    # 파일 저장을 위해 전처리한 제목 (파일명으로 사용됨)
+                    preprocessed_title = to_valid_filename(title)
 
                     # 게시글 날짜 업로드 날짜
                     post_date = extract_date(date.get_attribute('innerText'))
 
                     # 게시글 데이터 병합
-                    post_text = '[ {} ]\n\n'.format(origin_title)
+                    post_text = '[ {} ]\n\n'.format(title)
                     for text in texts:
                         current_text = text.get_attribute('innerText').strip()
 
@@ -91,7 +91,7 @@ class Parser:
                             src = update_size(img.get_attribute('src'))
 
                             image_list.append({
-                                'title': title,
+                                'title': preprocessed_title,
                                 'date': post_date,
                                 'content': post_text,
                                 'src': src
