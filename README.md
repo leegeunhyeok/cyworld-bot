@@ -68,7 +68,9 @@ pip3 install -r requirements.txt
     - chromedriver: 크롬드라이버 경로
       - 윈도우: ./driver/chromedriver.exe
       - 리눅스 & 맥: ./driver/chromedriver
-    - delay: 다운로드 지연시간 (되도록이면 기본값인 3을 유지해주세요)
+    - wait: 크롬드라이버 대기시간 (초)
+      - 네트워크 환경이 좋지 않아 로그인, 홈으로 이동 과정 등에서 시간초과 오류가 발생할 경우 적절히 조절해주세요
+    - delay: 다운로드 지연시간 (되도록이면 기본값인 3초를 유지해주세요)
     - parser: 파싱 프로세스 수
       - ⚠️ CPU 코어 수보다 큰 수를 입력하지 않는것을 추천합니다. (1 ~ 코어 수)
     - downloader: 다운로더 프로세스 수
