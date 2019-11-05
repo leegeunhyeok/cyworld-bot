@@ -42,12 +42,12 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 class CyBot:
-    def __init__(self, chromedriver, delay=3):
+    def __init__(self, chromedriver, wait=5, delay=3):
         self._logger = Logger('cybot.log')
 
         self._logger.info('크롬 드라이버 로딩 중..')
         driver = webdriver.Chrome(chromedriver)
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(wait)
         self._logger.info('크롬 드라이버 로딩 완료')
 
         self._chromedriver = chromedriver
@@ -55,7 +55,7 @@ class CyBot:
         self._user_id = ''
         self._delay = delay
         self._driver = driver
-        self._wait = WebDriverWait(driver, 5)
+        self._wait = WebDriverWait(driver, wait)
 
 
     def init(self):
@@ -234,11 +234,12 @@ if __name__ == '__main__':
         raise ValueError('계정 정보가 필요합니다.')
 
     chromedriver = config.get('bot', 'chromedriver')
+    wait = int(config.get('bot', 'wait'))
     delay = int(config.get('bot', 'delay'))
     parser = int(config.get('bot', 'parser'))
     downloader = int(config.get('bot', 'downloader'))
 
-    bot = CyBot(chromedriver, delay=delay)
+    bot = CyBot(chromedriver, wait=wait, delay=delay)
     bot.init() \
         .login(user_email, user_password) \
         .home() \
