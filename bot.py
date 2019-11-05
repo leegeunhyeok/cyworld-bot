@@ -187,7 +187,12 @@ class CyBot:
             # 파서 프로세스 생성 및 시작
             for idx in range(parser):
                 parser_instance = Parser(
-                    self._chromedriver, cookie, parser_logger, self._delay)
+                    self._chromedriver,
+                    cookie,
+                    parser_logger,
+                    self._wait,
+                    self._delay
+                )
                 parser_process = Process(
                     target=parser_instance.parse, \
                     args=(
