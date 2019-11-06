@@ -53,6 +53,7 @@ class CyBot:
         self._chromedriver = chromedriver
         self._base_url = 'https://cy.cyworld.com'
         self._user_id = ''
+        self._wait_time = wait
         self._delay = delay
         self._driver = driver
         self._wait = WebDriverWait(driver, wait)
@@ -190,7 +191,7 @@ class CyBot:
                     self._chromedriver,
                     cookie,
                     parser_logger,
-                    self._wait,
+                    self._wait_time,
                     self._delay
                 )
                 parser_process = Process(
