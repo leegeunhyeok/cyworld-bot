@@ -25,7 +25,19 @@ SOFTWARE.
 import sys
 import multiprocessing
 
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QStackedWidget
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QFormLayout
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
