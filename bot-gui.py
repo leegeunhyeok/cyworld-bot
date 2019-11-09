@@ -135,7 +135,7 @@ class MainWidget(QWidget):
         secondaryOptionLayout.addRow(timeoutLabel, timeoutField)
         secondaryOptionLayout.addRow(delayLabel, delayField)
         secondaryOptionLayout.setContentsMargins(0, 2, 0, 0)
-        secondaryOptionLayout.setSpacing(7)
+        secondaryOptionLayout.setSpacing(8)
 
         mergeOptionLayout = QHBoxLayout()
         mergeOptionLayout.addStretch()
