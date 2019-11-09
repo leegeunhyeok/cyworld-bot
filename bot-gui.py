@@ -90,11 +90,18 @@ class MainWidget(QWidget):
         accountForm.addRow(passwordLabel, passwordField)
 
         # 설정 폼 레이아웃
-        optionForm = QFormLayout()
+        optionLayout = QVBoxLayout()
+        
+        # 크롬 드라이버 옵션 레이아웃
+        chromeDriverLayout = QFormLayout()
         chromeDriverLabel = QLabel('Chrome Driver')
-        driverButton = QPushButton('불러오기')
-        driverButton.clicked.connect(self.onDriverSelect)
+        chromeDriverButton = QPushButton('불러오기')
+        chromeDriverButton.clicked.connect(self.onDriverSelect)
 
+        chromeDriverLayout.addRow(chromeDriverLabel, chromeDriverButton)
+
+        # 파서, 다운로더 옵션 영역 (#1)
+        primaryOptionLayout = QFormLayout()
         parserLabel = QLabel('Parser')
         parserOption = QComboBox(self)
         for i in range(cpu_count):
@@ -109,9 +116,35 @@ class MainWidget(QWidget):
         downloaderOption.currentIndexChanged.connect(self.onDownloaderOption)
         downloaderOption.setCurrentIndex(int(cpu_count / 2) - 1)
 
-        optionForm.addRow(chromeDriverLabel, driverButton)
-        optionForm.addRow(parserLabel, parserOption)
-        optionForm.addRow(downloaderLabel, downloaderOption)
+        primaryOptionLayout.addRow(parserLabel, parserOption)
+        primaryOptionLayout.addRow(downloaderLabel, downloaderOption)
+        primaryOptionLayout.setSpacing(0)
+
+        # 네트워크 대기시간, 지연시간 옵션 영역 (#2)
+        secondaryOptionLayout = QFormLayout()
+        timeoutLabel = QLabel('Timeout')
+        timeoutField = QLineEdit('5')
+        timeoutField.setFixedWidth(50)
+        self.timeoutField = timeoutField
+
+        delayLabel = QLabel('Delay')
+        delayField = QLineEdit('3')
+        delayField.setFixedWidth(50)
+        self.delayField = delayField
+
+        secondaryOptionLayout.addRow(timeoutLabel, timeoutField)
+        secondaryOptionLayout.addRow(delayLabel, delayField)
+        secondaryOptionLayout.setContentsMargins(0, 2, 0, 0)
+        secondaryOptionLayout.setSpacing(7)
+
+        mergeOptionLayout = QHBoxLayout()
+        mergeOptionLayout.addStretch()
+        mergeOptionLayout.addLayout(primaryOptionLayout)
+        mergeOptionLayout.addLayout(secondaryOptionLayout)
+        mergeOptionLayout.addStretch()
+
+        optionLayout.addLayout(chromeDriverLayout)
+        optionLayout.addLayout(mergeOptionLayout)
 
         # 하단 레이아웃 (시작 버튼 영역)
         bottomLayout = QHBoxLayout()
@@ -125,8 +158,8 @@ class MainWidget(QWidget):
         mainLayout.addWidget(description)
         mainLayout.addSpacing(30)
         mainLayout.addLayout(accountForm)
-        mainLayout.addLayout(optionForm)
-        mainLayout.addSpacing(20)
+        mainLayout.addSpacing(10)
+        mainLayout.addLayout(optionLayout)
         mainLayout.addLayout(bottomLayout)
 
         self.setLayout(mainLayout)
@@ -175,8 +208,15 @@ class MainWidget(QWidget):
         email = self.emailField.text()
         password = self.passwordField.text()
 
+        try:
+            timeout = int(self.timeoutField.text())
+            delay = int(self.delayField.text())
+        except ValueError as e:
+            self.showDialog('대기시간과 지연시간은 숫자로 입력해주세요')
+            return
+
         if email and password and self.chromeDriver:
-            print(email, password, self.chromeDriver)
+            print(email, password, self.chromeDriver, timeout, delay)
         else:
             if not (email and password):
                 self.showDialog('계정 정보를 입력해주세요')
