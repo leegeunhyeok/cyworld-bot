@@ -49,6 +49,7 @@ class MainWidget(QWidget):
         '''
         super().__init__()
         self.setGeometry(left, top, width, height)
+        self.chromeDriver = ''
         self.parserCount = 1
         self.downloaderCount = 1
 
@@ -57,7 +58,7 @@ class MainWidget(QWidget):
 
         # 로고 이미지, 설명 문구
         logo = QLabel()
-        logo.setPixmap(QPixmap('a.png'))
+        logo.setPixmap(QPixmap('logo.png'))
         logo.setAlignment(Qt.AlignCenter)
         description = QLabel('싸이월드의 사진들로 추억을 간직하세요')
         description.setAlignment(Qt.AlignCenter)
@@ -127,8 +128,8 @@ class MainWidget(QWidget):
         message : str, required
             대화창에 표시할 메시지
         '''
-        dialogWidth = 200
-        dialogHeight = 100
+        dialogWidth = 300
+        dialogHeight = 120
 
         dialog = QDialog()
         dialogLayout = QVBoxLayout()
@@ -152,14 +153,23 @@ class MainWidget(QWidget):
 
     def onDriverSelect(self):
         '''파일 대화창을 열고 선택한 파일 경로를 chromeDriver에 저장합니다.'''
-        self.chromeDriver = QFileDialog.getOpenFileName(self)
+        self.chromeDriver = QFileDialog.getOpenFileName(self)[0]
 
     def onStart(self):
         '''싸이월드 크롤링 작업을 시작합니다.
 
         만약 유저 정보가 비어있거나, 드라이버를 선택하지 않은 경우 알림창을 표시합니다.
         '''
-        self.showDialog('Hello')
+        email = self.emailField.text()
+        password = self.passwordField.text()
+
+        if email and password and self.chromeDriver:
+            print(email, password, self.chromeDriver)
+        else:
+            if not (email and password):
+                self.showDialog('계정 정보를 입력해주세요')
+            elif not self.chromeDriver:
+                self.showDialog('크롬 드라이버 파일을 선택해주세요')
 
     def onParserOption(self, item):
         '''파서 프로세스 수가 변경된 경우 호출되는 핸들러
