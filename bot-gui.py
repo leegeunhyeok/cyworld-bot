@@ -32,6 +32,21 @@ from PyQt5.QtCore import Qt
 
 class MainWidget(QWidget):
     def __init__(self, left, top, width, height, cpu_count):
+        '''생성자
+
+        Parameters
+        ----------
+        left : int, required
+            좌측 여백
+        top : int, required
+            상단 여백
+        width : int, required
+            폭
+        height : int, required
+            높이
+        cpu_count : int, required
+            CPU 코어 수
+        '''
         super().__init__()
         self.setGeometry(left, top, width, height)
         self.parserCount = 1
@@ -51,10 +66,12 @@ class MainWidget(QWidget):
         accountForm = QFormLayout()
         emailLabel = QLabel('E-Mail')
         emailField = QLineEdit(self)
+        self.emailField = emailField
 
         passwordLabel = QLabel('Password')
         passwordField = QLineEdit(self)
         passwordField.setEchoMode(QLineEdit.Password)
+        self.passwordField = passwordField
 
         accountForm.addRow(emailLabel, emailField)
         accountForm.addRow(passwordLabel, passwordField)
@@ -103,6 +120,13 @@ class MainWidget(QWidget):
         self.setFixedSize(width, height)
 
     def showDialog(self, message):
+        '''대화창을 생성합니다.
+
+        Parameters
+        ----------
+        message : str, required
+            대화창에 표시할 메시지
+        '''
         dialogWidth = 200
         dialogHeight = 100
 
@@ -127,20 +151,40 @@ class MainWidget(QWidget):
         dialog.exec_()
 
     def onDriverSelect(self):
-        self._fileName = QFileDialog.getOpenFileName(self)
+        '''파일 대화창을 열고 선택한 파일 경로를 chromeDriver에 저장합니다.'''
+        self.chromeDriver = QFileDialog.getOpenFileName(self)
 
     def onStart(self):
+        '''싸이월드 크롤링 작업을 시작합니다.
+
+        만약 유저 정보가 비어있거나, 드라이버를 선택하지 않은 경우 알림창을 표시합니다.
+        '''
         self.showDialog('Hello')
 
     def onParserOption(self, item):
+        '''파서 프로세스 수가 변경된 경우 호출되는 핸들러
+
+        Parameters
+        ----------
+        item : str, required
+            선택된 항목의 인덱스 번호
+        '''
         self.parserCount = item + 1
 
     def onDownloaderOption(self, item):
+        '''다운로더 프로세스 수가 변경된 경우 호출되는 핸들러
+
+        Parameters
+        ----------
+        item : str, required
+            선택된 항목의 인덱스 번호
+        '''
         self.downloaderCount = item + 1
 
 
 class App(QMainWindow):
     def __init__(self):
+        '''생성자'''
         super().__init__()
         self.title = 'Cyworld Bot'
         self.left = 10
@@ -167,9 +211,11 @@ class App(QMainWindow):
         self.show()
 
     def showMainWidget(self):
+        '''메인 위젯으로 화면을 전환합니다.'''
         self.centralWidget.setCurrentWidget(self.mainWidget)
 
-    def showRunningWidget(self):
+    def showWorkingWidget(self):
+        '''작업 중 위젯으로 화면을 전환합니다.'''
         self.centralWidget.setCurrentWidget(self.mainWidget)
 
 if __name__ == '__main__':
