@@ -2,10 +2,10 @@ driver/chromedriver*
 *.pyc
 *.log
 
-images/*.gif
-images/*.jpg
-images/*.png
-posts/*.txt
+backup/images/*.gif
+backup/images/*.jpg
+backup/images/*.png
+backup/posts/*.txt
 
 .DS_Store
 .vscode
