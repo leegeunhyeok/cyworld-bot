@@ -35,8 +35,9 @@ class Logger:
         return '(' + datetime.now().strftime(self._format) + ')'
 
     def _log(self, level, *args):
-        m = self._timestamp() + ' - ' + level + ' ' + (' '.join(args[0]))
-        print(m)
+        m = level + ' ' + (' '.join(args[0]))
+        tm = self._timestamp() + ' - ' + m
+        print(tm)
 
         if self._callback:
             self._callback(m)
