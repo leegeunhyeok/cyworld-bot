@@ -89,6 +89,11 @@ class MainWidget(QWidget):
         accountForm.addRow(emailLabel, emailField)
         accountForm.addRow(passwordLabel, passwordField)
 
+        accountLayout = QHBoxLayout()
+        accountLayout.addStretch(1)
+        accountLayout.addLayout(accountForm)
+        accountLayout.addStretch(1)
+
         # 설정 폼 레이아웃
         optionLayout = QVBoxLayout()
         
@@ -118,7 +123,6 @@ class MainWidget(QWidget):
 
         primaryOptionLayout.addRow(parserLabel, parserOption)
         primaryOptionLayout.addRow(downloaderLabel, downloaderOption)
-        primaryOptionLayout.setSpacing(0)
 
         # 네트워크 대기시간, 지연시간 옵션 영역 (#2)
         secondaryOptionLayout = QFormLayout()
@@ -135,7 +139,6 @@ class MainWidget(QWidget):
         secondaryOptionLayout.addRow(timeoutLabel, timeoutField)
         secondaryOptionLayout.addRow(delayLabel, delayField)
         secondaryOptionLayout.setContentsMargins(0, 2, 0, 0)
-        secondaryOptionLayout.setSpacing(8)
 
         mergeOptionLayout = QHBoxLayout()
         mergeOptionLayout.addStretch()
@@ -143,7 +146,12 @@ class MainWidget(QWidget):
         mergeOptionLayout.addLayout(secondaryOptionLayout)
         mergeOptionLayout.addStretch()
 
-        optionLayout.addLayout(chromeDriverLayout)
+        chromeHLayout = QHBoxLayout()
+        chromeHLayout.addStretch(1)
+        chromeHLayout.addLayout(chromeDriverLayout)
+        chromeHLayout.addStretch(1)
+
+        optionLayout.addLayout(chromeHLayout)
         optionLayout.addLayout(mergeOptionLayout)
 
         # 하단 레이아웃 (시작 버튼 영역)
@@ -157,7 +165,7 @@ class MainWidget(QWidget):
         mainLayout.addWidget(logo)
         mainLayout.addWidget(description)
         mainLayout.addSpacing(30)
-        mainLayout.addLayout(accountForm)
+        mainLayout.addLayout(accountLayout)
         mainLayout.addSpacing(10)
         mainLayout.addLayout(optionLayout)
         mainLayout.addLayout(bottomLayout)
@@ -183,12 +191,12 @@ class MainWidget(QWidget):
         button = QPushButton('확인')
         button.clicked.connect(lambda: dialog.close())
 
-        dialogLayout.addSpacing(10)
+        dialogLayout.addStretch(1)
         dialogLayout.addWidget(message)
         dialogLayout.addStretch()
         dialogLayout.addWidget(button)
         dialogLayout.setAlignment(Qt.AlignCenter)
-        dialogLayout.addSpacing(10)
+        dialogLayout.addStretch(1)
 
         dialog.setLayout(dialogLayout)
         dialog.setWindowTitle('알림')
@@ -256,6 +264,7 @@ class App(QMainWindow):
         self.cpu_count = multiprocessing.cpu_count()
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setFixedSize(self.width, self.height)
 
         self.mainWidget = MainWidget(
             self.left,
