@@ -43,22 +43,8 @@ config.read('config.ini')
 
 class CyBot:
     def __init__(self, chromedriver, wait=5, delay=3, \
-        headless=False, onerror=exit):
-        self._logger = Logger('./logs/cybot.log')
-
-        self._logger.info('크롬 드라이버 로딩 중..')
-        options = None
-        if headless:
-            options = webdriver.ChromeOptions()
-            options.add_argument('headless')
-            options.add_argument('window-size=1920x1080')
-            options.add_argument("disable-gpu")
-            options.add_argument('log-level=3')
-            driver = webdriver.Chrome(chromedriver, chrome_options=options)
-        else:
-            driver = webdriver.Chrome(chromedriver)
-        driver.implicitly_wait(wait)
-        self._logger.info('크롬 드라이버 로딩 완료')
+        headless=False, onlog=None, onerror=exit, done=exit):
+        self._logger = Logger('./logs/cybot.log', callback=onlog)
 
         self._chromedriver = chromedriver
         self._base_url = 'https://cy.cyworld.com'
@@ -67,14 +53,38 @@ class CyBot:
         self._delay = delay
         self._headless = headless
         self._onerror = onerror
-        self._options = options
-        self._driver = driver
-        self._wait = WebDriverWait(driver, wait)
+        self._done = done
+        self._options = None
+        self._driver = None
+        self._wait = None
 
 
     def init(self):
-        self._logger.info('싸이월드 홈페이지 접속 중..')
+        self._logger.info('크롬 드라이버 로딩 중..')
+        try:
+            options = None
+            if self._headless:
+                options = webdriver.ChromeOptions()
+                options.add_argument('headless')
+                options.add_argument('window-size=1920x1080')
+                options.add_argument("disable-gpu")
+                options.add_argument('log-level=3')
+                driver = webdriver.Chrome(chromedriver, chrome_options=options)
+            else:
+                driver = webdriver.Chrome(chromedriver)
+            driver.implicitly_wait(self._wait_time)
+        except Exception as e:
+            self._logger.error('크롬 드라이버 로딩 실패')
+            self._onerror()
+            return
+
+        self._options = options
+        self._chromedriver = driver
+        self._wait = WebDriverWait(driver, self._wait_time)
+        self._logger.info('크롬 드라이버 로딩 완료')
+
         # 싸이월드 페이지 열기
+        self._logger.info('싸이월드 홈페이지 접속 중..')
         self._driver.get('https://cyworld.com')
         self._logger.success('싸이월드 홈페이지 접속 완료')
         return self
@@ -96,6 +106,7 @@ class CyBot:
         except:
             self._logger.error('시간이 초과되었습니다')
             self._onerror()
+            return None
 
         url = self._driver.current_url
         if 'timeline' in url:
@@ -104,6 +115,7 @@ class CyBot:
         else:
             self._logger.error('사용자 정보를 확인해주세요')
             self._onerror()
+            return None
 
 
     def home(self):
@@ -123,10 +135,12 @@ class CyBot:
         except:
             self._logger.error('시간이 초과되었습니다')
             self._onerror()
+            return None
 
         if 'home' not in self._driver.current_url:
             self._logger.error('마이 홈으로 이동할 수 없습니다')
             self._onerror()
+            return None
 
         self._logger.success('이동 완료')
         return self
@@ -241,9 +255,10 @@ class CyBot:
             for p in processes:
                 p.join()
 
-            self._logger.info('작업 소요시간: {}초' \
-                .format(round(time.time() - start, 2)))
-            self._logger.info('전체 이미지 수: {}'.format(count.value))
+        self._logger.info('작업 소요시간: {}초' \
+            .format(round(time.time() - start, 2)))
+        self._logger.info('전체 이미지 수: {}'.format(count.value))
+        self._done()
 
 
 if __name__ == '__main__':
