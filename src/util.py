@@ -23,6 +23,9 @@ SOFTWARE.
 '''
 
 import re
+import os
+import sys
+import subprocess
 
 class EC_or:
     def __init__(self, *args):
@@ -51,3 +54,14 @@ def update_size(s):
 
 def clean_text(s):
     return re.sub(r'\s{2,}', '', s)
+
+def open_directory(path):
+    try:
+        if sys.platform == 'win32':
+            os.startfile(path)
+        elif sys.platform == 'darwin':
+            subprocess.check_call(['open', '--', path])
+        else:
+            subprocess.check_call(['xdg-open', '--', path])
+    except:
+        pass
