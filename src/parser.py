@@ -43,14 +43,14 @@ class Parser:
         name = current_process().name
         self._logger.info(name, '크롬 드라이버 로딩 중..')
 
-        if headless:
+        if self._headless:
             options = webdriver.ChromeOptions()
             options.add_argument('headless')
             options.add_argument('window-size=1920x1080')
             options.add_argument("disable-gpu")
-            parser_driver = webdriver.Chrome(chromedriver, chrome_options=options)
+            parser_driver = webdriver.Chrome(self._chromedriver, chrome_options=options)
         else:
-            parser_driver = webdriver.Chrome(chromedriver)
+            parser_driver = webdriver.Chrome(self._chromedriver)
 
         parser_driver.implicitly_wait(self._wait)
         parser_driver.get('https://cyworld.com')
