@@ -52,6 +52,7 @@ class CyBot:
         self._wait_time = wait
         self._delay = delay
         self._headless = headless
+        self._onlog = onlog
         self._onerror = onerror
         self._done = done
         self._options = None
@@ -205,7 +206,8 @@ class CyBot:
             parser_running = manager.Value('i', 1)
 
             parser_logger = Logger('./logs/cybot_parser.log')
-            downloader_logger = Logger('./logs/cybot_downloader.log')
+            downloader_logger = Logger('./logs/cybot_downloader.log', \
+                callback=self._onlog)
             main_cookies = self._driver.get_cookies()
             cookie = []
 
