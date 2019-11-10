@@ -30,18 +30,28 @@ from selenium.webdriver.support.ui import WebDriverWait
 from src.util import extract_date, to_valid_filename, update_size, clean_text
 
 class Parser:
-    def __init__(self, chromedriver, cookie, logger, wait, delay):
+    def __init__(self, chromedriver, cookie, logger, wait, delay, headless):
         self._chromedriver = chromedriver
         self._cookie = cookie
         self._logger = logger
         self._wait = wait
         self._delay = delay
+        self._headless = headless
 
 
     def parse(self, content_list, image_list, feeder_running, parser_running):
         name = current_process().name
         self._logger.info(name, '크롬 드라이버 로딩 중..')
-        parser_driver = webdriver.Chrome(self._chromedriver)
+
+        if headless:
+            options = webdriver.ChromeOptions()
+            options.add_argument('headless')
+            options.add_argument('window-size=1920x1080')
+            options.add_argument("disable-gpu")
+            parser_driver = webdriver.Chrome(chromedriver, chrome_options=options)
+        else:
+            parser_driver = webdriver.Chrome(chromedriver)
+
         parser_driver.implicitly_wait(self._wait)
         parser_driver.get('https://cyworld.com')
         for cookie in self._cookie:

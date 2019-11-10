@@ -42,11 +42,19 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 class CyBot:
-    def __init__(self, chromedriver, wait=5, delay=3):
+    def __init__(self, chromedriver, wait=5, delay=3, headless=False):
         self._logger = Logger('./logs/cybot.log')
 
         self._logger.info('크롬 드라이버 로딩 중..')
-        driver = webdriver.Chrome(chromedriver)
+        options = None
+        if headless:
+            options = webdriver.ChromeOptions()
+            options.add_argument('headless')
+            options.add_argument('window-size=1920x1080')
+            options.add_argument("disable-gpu")
+            driver = webdriver.Chrome(chromedriver, chrome_options=options)
+        else:
+            driver = webdriver.Chrome(chromedriver)
         driver.implicitly_wait(wait)
         self._logger.info('크롬 드라이버 로딩 완료')
 
@@ -55,6 +63,8 @@ class CyBot:
         self._user_id = ''
         self._wait_time = wait
         self._delay = delay
+        self._headless = headless
+        self._options = options
         self._driver = driver
         self._wait = WebDriverWait(driver, wait)
 
@@ -192,7 +202,8 @@ class CyBot:
                     cookie,
                     parser_logger,
                     self._wait_time,
-                    self._delay
+                    self._delay,
+                    self._headless
                 )
                 parser_process = Process(
                     target=parser_instance.parse, \
