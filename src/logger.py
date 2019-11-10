@@ -43,7 +43,7 @@ class Logger:
             self._callback(m)
 
         with open(self._filename, 'a', encoding='utf8') as f:
-            f.write(m.strip() + '\n')
+            f.write(tm.strip() + '\n')
 
     def info(self, *args, callback=True):
         self._log('[INFO]', args, callback=callback)
