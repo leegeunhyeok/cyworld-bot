@@ -267,6 +267,25 @@ class ProcessWidget(QWidget):
         self.window = window
         self.setGeometry(left, top, width, height)
 
+        # 메인 레이아웃
+        mainLayout = QVBoxLayout()
+
+        # 로고 이미지, 설명 문구
+        logo = QLabel()
+        logo.setPixmap(QPixmap('logo.png'))
+        logo.setAlignment(Qt.AlignCenter)
+        message = QLabel('작업 준비 중..')
+        message.setAlignment(Qt.AlignCenter)
+
+        mainLayout.addStretch(1)
+        mainLayout.addWidget(logo)
+        mainLayout.addStretch(2)
+        mainLayout.addWidget(message)
+        mainLayout.addStretch(2)
+
+        self.message = message
+        self.setLayout(mainLayout)
+
         # self.setLayout(mainLayout)
         self.setFixedSize(width, height)
 
