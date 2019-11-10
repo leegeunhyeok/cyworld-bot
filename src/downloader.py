@@ -60,12 +60,13 @@ class Downloader:
                     )
 
                     # 게시물 내용 저장
-                    with open('./posts/{}.txt'.format(filename), 'w') as text:
+                    with open('./backup/posts/{}.txt'.format(filename), 'w') \
+                        as text:
                         text.write(image_data['content'])
 
                     # 이미지 파일 저장
-                    with open('./images/{}.{}'.format(filename, ext), 'wb') \
-                        as image:
+                    with open('./backup/images/{}.{}'.format(filename, ext), \
+                        'wb') as image:
                         image.write(res.content)
                         self._logger.info(name, filename, '다운로드 됨')
 
