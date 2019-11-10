@@ -26,16 +26,21 @@ import os
 from datetime import datetime
 
 class Logger:
-    def __init__(self, filename):
+    def __init__(self, filename, callback=None):
         self._format = '%Y-%m-%d %H:%M:%S.%f'
         self._filename = filename
+        self._callback = callback
 
     def _timestamp(self):
         return '(' + datetime.now().strftime(self._format) + ')'
 
     def _log(self, level, *args):
-        m = self._timestamp() + ' - ' + level + ' ' + (' '.join(args[0]))
-        print(m)
+        m = level + ' ' + (' '.join(args[0]))
+        tm = self._timestamp() + ' - ' + m
+        print(tm)
+
+        if self._callback:
+            self._callback(m)
 
         with open(self._filename, 'a', encoding='utf8') as f:
             f.write(m.strip() + '\n')
