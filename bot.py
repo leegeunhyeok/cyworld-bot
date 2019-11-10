@@ -163,7 +163,7 @@ class CyBot:
                 cid = content.get_attribute('value')
                 content_url = '{}/home/{}/post/{}/layer' \
                     .format(self._base_url, self._user_id, cid)
-                self._logger.info('Feeder::', content_url, callback=None)
+                self._logger.info('Feeder::', content_url)
                 content_list.append(content_url)
                 content_index += 1
 
@@ -208,8 +208,7 @@ class CyBot:
             parser_running = manager.Value('i', 1)
 
             parser_logger = Logger('./logs/cybot_parser.log')
-            downloader_logger = Logger('./logs/cybot_downloader.log', \
-                callback=self._onlog)
+            downloader_logger = Logger('./logs/cybot_downloader.log')
             main_cookies = self._driver.get_cookies()
             cookie = []
 
@@ -237,6 +236,7 @@ class CyBot:
                     )
                 )
                 parser_process.name = 'Parser::' + str(idx)
+                parser_process.daemon = True
                 parser_process.start()
                 processes.append(parser_process)
                 self._logger.info('Parser', str(idx), '프로세스 시작')
@@ -248,6 +248,7 @@ class CyBot:
                     target=downloader_instance.download, \
                     args=(image_list, count, lock, parser_running))
                 downloader_process.name = 'Downloader::' + str(idx)
+                downloader_process.daemon = True
                 downloader_process.start()
                 processes.append(downloader_process)
                 self._logger.info('Downloader', str(idx), '프로세스 시작')
