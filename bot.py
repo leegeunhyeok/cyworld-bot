@@ -70,9 +70,10 @@ class CyBot:
                 options.add_argument('window-size=1920x1080')
                 options.add_argument("disable-gpu")
                 options.add_argument('log-level=3')
-                driver = webdriver.Chrome(chromedriver, chrome_options=options)
+                driver = webdriver.Chrome(self._chromedriver, \
+                    chrome_options=options)
             else:
-                driver = webdriver.Chrome(chromedriver)
+                driver = webdriver.Chrome(self._chromedriver)
             driver.implicitly_wait(self._wait_time)
         except Exception as e:
             self._logger.error('크롬 드라이버 로딩 실패')
@@ -80,7 +81,7 @@ class CyBot:
             return
 
         self._options = options
-        self._chromedriver = driver
+        self._driver = driver
         self._wait = WebDriverWait(driver, self._wait_time)
         self._logger.info('크롬 드라이버 로딩 완료')
 
