@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import os
 import sys
 import multiprocessing
 
@@ -40,6 +41,9 @@ from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
+
+from bot import CyBot
+from src.util import open_directory
 
 
 class MainWidget(QWidget):
@@ -264,7 +268,6 @@ class ProcessWidget(QWidget):
     def __init__(self, window, left, top, width, height):
         '''생성자'''
         super().__init__()
-        self.window = window
         self.setGeometry(left, top, width, height)
 
         # 메인 레이아웃
@@ -274,20 +277,38 @@ class ProcessWidget(QWidget):
         logo = QLabel()
         logo.setPixmap(QPixmap('logo.png'))
         logo.setAlignment(Qt.AlignCenter)
-        message = QLabel('작업 준비 중..')
+        message = QLabel()
         message.setAlignment(Qt.AlignCenter)
+
+        buttonLayout = QHBoxLayout()
+
+        homeButton = QPushButton('처음으로')
+        homeButton.clicked.connect(window.showMainWidget)
+        openButton = QPushButton('파일 보기')
+        openButton.clicked.connect(self.openResultPath)
+
+        buttonLayout.addStretch(1)
+        buttonLayout.addWidget(homeButton)
+        buttonLayout.addWidget(openButton)
+        buttonLayout.addStretch(1)
 
         mainLayout.addStretch(1)
         mainLayout.addWidget(logo)
         mainLayout.addStretch(2)
         mainLayout.addWidget(message)
+        mainLayout.addLayout(buttonLayout)
         mainLayout.addStretch(2)
 
         self.message = message
+        self.homeButton = homeButton
+        self.openButton = openButton
         self.setLayout(mainLayout)
-
-        # self.setLayout(mainLayout)
         self.setFixedSize(width, height)
+
+    def openResultPath(self):
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(file_path, 'backup')
+        open_directory(path)
 
 
 class App(QMainWindow):
@@ -336,9 +357,44 @@ class App(QMainWindow):
         '''작업 중 위젯으로 화면을 전환합니다.'''
         self.centralWidget.setCurrentWidget(self.processWidget)
 
-    def start(self, user_email, user_password, driver, parser, downloader, \
-        wait_timeout, delay):
+    def start(self, user_email, user_password, chromedriver, 
+        parser, downloader, wait_timeout, delay):
+        self.processWidget.message.setText('작업 준비 중..')
+        self.processWidget.homeButton.hide()
+        self.processWidget.openButton.hide()
         self.showProcessWidget()
+
+        bot = CyBot(
+            chromedriver,
+            wait=wait_timeout,
+            delay=delay,
+            headless=True,
+            onlog=self.log_callback,
+            onerror=self.error,
+            done=self.done
+        )
+
+        bot = bot.init()
+
+        if bot:
+            bot.login(user_email, user_password)
+        
+        if bot:
+            bot.home()
+
+        if bot:
+            bot.run(parser=parser, downloader=downloader)
+
+    def log_callback(self, message):
+        self.processWidget.message.setText(message)
+
+    def error(self):
+        self.processWidget.homeButton.show()
+
+    def done(self):
+        self.processWidget.message.setText('작업 완료!')
+        self.processWidget.homeButton.show()
+        self.processWidget.openButton.show()
 
 if __name__ == '__main__':
     app = QApplication([])
