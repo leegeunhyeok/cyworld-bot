@@ -43,7 +43,7 @@ config.read('config.ini')
 
 class CyBot:
     def __init__(self, chromedriver, wait=5, delay=3):
-        self._logger = Logger('cybot.log')
+        self._logger = Logger('./logs/cybot.log')
 
         self._logger.info('크롬 드라이버 로딩 중..')
         driver = webdriver.Chrome(chromedriver)
@@ -177,8 +177,8 @@ class CyBot:
             feeder_running = manager.Value('i', 1)
             parser_running = manager.Value('i', 1)
 
-            parser_logger = Logger('cybot_parser.log')
-            downloader_logger = Logger('cybot_downloader.log')
+            parser_logger = Logger('./logs/cybot_parser.log')
+            downloader_logger = Logger('./logs/cybot_downloader.log')
             main_cookies = self._driver.get_cookies()
             cookie = []
 
