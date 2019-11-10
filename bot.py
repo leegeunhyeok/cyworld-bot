@@ -42,7 +42,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 class CyBot:
-    def __init__(self, chromedriver, wait=5, delay=3, headless=False):
+    def __init__(self, chromedriver, wait=5, delay=3, \
+        headless=False, onerror=exit):
         self._logger = Logger('./logs/cybot.log')
 
         self._logger.info('크롬 드라이버 로딩 중..')
@@ -65,6 +66,7 @@ class CyBot:
         self._wait_time = wait
         self._delay = delay
         self._headless = headless
+        self._onerror = onerror
         self._options = options
         self._driver = driver
         self._wait = WebDriverWait(driver, wait)
@@ -93,7 +95,7 @@ class CyBot:
             ))
         except:
             self._logger.error('시간이 초과되었습니다')
-            exit()
+            self._onerror()
 
         url = self._driver.current_url
         if 'timeline' in url:
@@ -101,7 +103,7 @@ class CyBot:
             return self
         else:
             self._logger.error('사용자 정보를 확인해주세요')
-            exit()
+            self._onerror()
 
 
     def home(self):
@@ -120,11 +122,11 @@ class CyBot:
             self._wait.until(EC.url_changes(prev_url))
         except:
             self._logger.error('시간이 초과되었습니다')
-            exit()
+            self._onerror()
 
         if 'home' not in self._driver.current_url:
             self._logger.error('마이 홈으로 이동할 수 없습니다')
-            exit()
+            self._onerror()
 
         self._logger.success('이동 완료')
         return self
