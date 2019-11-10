@@ -34,31 +34,31 @@ class Logger:
     def _timestamp(self):
         return '(' + datetime.now().strftime(self._format) + ')'
 
-    def _log(self, level, *args):
+    def _log(self, level, *args, callback):
         m = level + ' ' + (' '.join(args[0]))
         tm = self._timestamp() + ' - ' + m
         print(tm)
 
-        if self._callback:
+        if self._callback and callback:
             self._callback(m)
 
         with open(self._filename, 'a', encoding='utf8') as f:
             f.write(m.strip() + '\n')
 
-    def info(self, *args):
-        self._log('[INFO]', args)
+    def info(self, *args, callback=True):
+        self._log('[INFO]', args, callback=callback)
 
-    def success(self, *args):
-        self._log('[SUCCESS]', args)
+    def success(self, *args, callback=True):
+        self._log('[SUCCESS]', args, callback=callback)
 
-    def warning(self, *args):
-        self._log('[WARNING]', args)
+    def warning(self, *args, callback=True):
+        self._log('[WARNING]', args, callback=callback)
 
-    def error(self, *args):
-        self._log('[ERROR]', args)
+    def error(self, *args, callback=True):
+        self._log('[ERROR]', args, callback=callback)
 
-    def danger(self, *args):
-        self._log('[DANGER]', args)
+    def danger(self, *args, callback=True):
+        self._log('[DANGER]', args, callback=callback)
 
-    def critical(self, *args):
-        self._log('[CRITICAL]', args)
+    def critical(self, *args, callback=True):
+        self._log('[CRITICAL]', args, callback=callback)
