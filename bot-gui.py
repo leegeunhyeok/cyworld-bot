@@ -30,6 +30,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QStackedWidget
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QFormLayout
@@ -284,7 +285,7 @@ class ProcessWidget(QWidget):
 
         homeButton = QPushButton('처음으로')
         homeButton.clicked.connect(window.showMainWidget)
-        openButton = QPushButton('파일 보기')
+        openButton = QPushButton('결과 폴더 열기')
         openButton.clicked.connect(self.openResultPath)
 
         buttonLayout.addStretch(1)
@@ -311,6 +312,46 @@ class ProcessWidget(QWidget):
         open_directory(path)
 
 
+class BotWorker(QThread):
+    def __init__(self, window, user_email, user_password, chromedriver, \
+        parser, downloader, wait_timeout, delay):
+        super(BotWorker, self).__init__()
+        self.window = window
+        self.user_email = user_email
+        self.user_password = user_password
+        self.chromedriver = chromedriver
+        self.parser = parser
+        self.downloader = downloader
+        self.wait_timeout = wait_timeout
+        self.delay = delay
+        
+    def run(self):
+        bot = CyBot(
+            self.chromedriver,
+            wait=self.wait_timeout,
+            delay=self.delay,
+            headless=True,
+            onlog=self.window.log_callback,
+            onerror=self.window.error,
+            done=self.window.done
+        )
+
+        bot = bot.init()
+
+        if bot:
+            bot = bot.login(self.user_email, self.user_password)
+        
+        if bot:
+            bot = bot.home()
+
+        if bot:
+            bot.run(parser=self.parser, downloader=self.downloader)
+
+    def stop(self):
+        self.quit()
+        self.wait()
+
+
 class App(QMainWindow):
     def __init__(self):
         '''생성자'''
@@ -321,6 +362,7 @@ class App(QMainWindow):
         self.width = 640
         self.height = 480
         self.cpu_count = multiprocessing.cpu_count()
+        self.worker = None
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setFixedSize(self.width, self.height)
@@ -363,32 +405,26 @@ class App(QMainWindow):
         self.processWidget.homeButton.hide()
         self.processWidget.openButton.hide()
         self.showProcessWidget()
-
-        bot = CyBot(
-            chromedriver,
-            wait=wait_timeout,
-            delay=delay,
-            headless=True,
-            onlog=self.log_callback,
-            onerror=self.error,
-            done=self.done
+        
+        worker = BotWorker(
+            self,
+            user_email,
+            user_password,
+            chromedriver, 
+            parser,
+            downloader,
+            wait_timeout,
+            delay
         )
 
-        bot = bot.init()
-
-        if bot:
-            bot.login(user_email, user_password)
-        
-        if bot:
-            bot.home()
-
-        if bot:
-            bot.run(parser=parser, downloader=downloader)
+        worker.start()
+        self.worker = worker
 
     def log_callback(self, message):
         self.processWidget.message.setText(message)
 
     def error(self):
+        self.worker.stop()
         self.processWidget.homeButton.show()
 
     def done(self):
