@@ -1,6 +1,8 @@
 certifi==2019.9.11
 chardet==3.0.4
 idna==2.8
+PyQt5==5.13.2
+PyQt5-sip==12.7.0
 requests==2.22.0
 selenium==3.141.0
 soupsieve==1.9.4
