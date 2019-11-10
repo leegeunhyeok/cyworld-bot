@@ -43,7 +43,7 @@ from PyQt5.QtCore import Qt
 
 
 class MainWidget(QWidget):
-    def __init__(self, left, top, width, height, cpu_count):
+    def __init__(self, window, left, top, width, height, cpu_count):
         '''생성자
 
         Parameters
@@ -60,6 +60,7 @@ class MainWidget(QWidget):
             CPU 코어 수
         '''
         super().__init__()
+        self.window = window
         self.setGeometry(left, top, width, height)
         self.chromeDriver = ''
         self.parserCount = 1
@@ -224,7 +225,15 @@ class MainWidget(QWidget):
             return
 
         if email and password and self.chromeDriver:
-            print(email, password, self.chromeDriver, timeout, delay)
+            self.window.start(
+                email,
+                password,
+                self.chromeDriver,
+                self.parserCount,
+                self.downloaderCount,
+                timeout,
+                delay
+            )
         else:
             if not (email and password):
                 self.showDialog('계정 정보를 입력해주세요')
@@ -251,6 +260,16 @@ class MainWidget(QWidget):
         '''
         self.downloaderCount = item + 1
 
+class ProcessWidget(QWidget):
+    def __init__(self, window, left, top, width, height):
+        '''생성자'''
+        super().__init__()
+        self.window = window
+        self.setGeometry(left, top, width, height)
+
+        # self.setLayout(mainLayout)
+        self.setFixedSize(width, height)
+
 
 class App(QMainWindow):
     def __init__(self):
@@ -267,6 +286,7 @@ class App(QMainWindow):
         self.setFixedSize(self.width, self.height)
 
         self.mainWidget = MainWidget(
+            self,
             self.left,
             self.top,
             self.width,
@@ -274,10 +294,18 @@ class App(QMainWindow):
             self.cpu_count
         )
 
+        self.processWidget = ProcessWidget(
+            self,
+            self.left,
+            self.top,
+            self.width,
+            self.height
+        )
+
         self.centralWidget = QStackedWidget()
         self.setCentralWidget(self.centralWidget)
         self.centralWidget.addWidget(self.mainWidget)
-        self.centralWidget.addWidget(self.mainWidget)
+        self.centralWidget.addWidget(self.processWidget)
         self.showMainWidget()
         self.show()
 
@@ -285,9 +313,13 @@ class App(QMainWindow):
         '''메인 위젯으로 화면을 전환합니다.'''
         self.centralWidget.setCurrentWidget(self.mainWidget)
 
-    def showWorkingWidget(self):
+    def showProcessWidget(self):
         '''작업 중 위젯으로 화면을 전환합니다.'''
-        self.centralWidget.setCurrentWidget(self.mainWidget)
+        self.centralWidget.setCurrentWidget(self.processWidget)
+
+    def start(self, user_email, user_password, driver, parser, downloader, \
+        wait_timeout, delay):
+        self.showProcessWidget()
 
 if __name__ == '__main__':
     app = QApplication([])
