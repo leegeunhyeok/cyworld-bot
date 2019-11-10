@@ -30,13 +30,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from src.util import extract_date, to_valid_filename, update_size, clean_text
 
 class Parser:
-    def __init__(self, chromedriver, cookie, logger, wait, delay, headless):
+    def __init__(self, chromedriver, cookie, logger, wait, delay, \
+        headless, options):
         self._chromedriver = chromedriver
         self._cookie = cookie
         self._logger = logger
         self._wait = wait
         self._delay = delay
         self._headless = headless
+        self._options = options
 
 
     def parse(self, content_list, image_list, feeder_running, parser_running):
@@ -44,12 +46,7 @@ class Parser:
         self._logger.info(name, '크롬 드라이버 로딩 중..')
 
         if self._headless:
-            options = webdriver.ChromeOptions()
-            options.add_argument('headless')
-            options.add_argument('window-size=1920x1080')
-            options.add_argument("disable-gpu")
-            options.add_argument('log-level=3')
-            parser_driver = webdriver.Chrome(self._chromedriver, chrome_options=options)
+            parser_driver = webdriver.Chrome(self._chromedriver, chrome_options=self._options)
         else:
             parser_driver = webdriver.Chrome(self._chromedriver)
 

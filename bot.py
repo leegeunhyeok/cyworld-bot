@@ -67,7 +67,7 @@ class CyBot:
             if self._headless:
                 options = webdriver.ChromeOptions()
                 options.add_argument('headless')
-                options.add_argument('window-size=1920x1080')
+                options.add_argument('window-size=800x600')
                 options.add_argument("disable-gpu")
                 options.add_argument('log-level=3')
                 driver = webdriver.Chrome(self._chromedriver, \
@@ -97,7 +97,8 @@ class CyBot:
 
         prev_url = self._driver.current_url
         self._driver.find_element_by_name('email').send_keys(user_email)
-        self._driver.find_element_by_name('passwd').send_keys(user_password, Keys.RETURN)
+        self._driver.find_element_by_name('passwd') \
+            .send_keys(user_password, Keys.RETURN)
 
         try:
             self._wait.until(EC_or(
@@ -162,7 +163,7 @@ class CyBot:
                 cid = content.get_attribute('value')
                 content_url = '{}/home/{}/post/{}/layer' \
                     .format(self._base_url, self._user_id, cid)
-                self._logger.info('Feeder::', content_url)
+                self._logger.info('Feeder::', content_url, callback=None)
                 content_list.append(content_url)
                 content_index += 1
 
@@ -223,7 +224,8 @@ class CyBot:
                     parser_logger,
                     self._wait_time,
                     self._delay,
-                    self._headless
+                    self._headless,
+                    self._options
                 )
                 parser_process = Process(
                     target=parser_instance.parse, \
