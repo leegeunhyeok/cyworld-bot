@@ -9,3 +9,6 @@ backup/posts/*.txt
 
 .DS_Store
 .vscode
+
+build
+dist
