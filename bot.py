@@ -36,6 +36,7 @@ from src.logger import Logger
 from src.parser import Parser
 from src.downloader import Downloader
 
+from sys import exit
 
 # 유저 계정 정보 로드
 config = configparser.ConfigParser()
