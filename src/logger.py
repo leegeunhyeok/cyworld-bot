@@ -30,6 +30,12 @@ class Logger:
         self._format = '%Y-%m-%d %H:%M:%S.%f'
         self._filename = filename
         self._callback = callback
+        self._create_dir()
+
+    def _create_dir(self):
+        log_dir = os.path.dirname(self._filename)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
     def _timestamp(self):
         return '(' + datetime.now().strftime(self._format) + ')'
