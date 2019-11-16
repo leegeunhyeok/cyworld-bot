@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 import time
+import shutil
 import requests
 from multiprocessing import current_process
 
@@ -47,7 +48,7 @@ class Downloader:
                     image_data = image_list.pop(0)
 
                     # 이미지 다운로드
-                    res = requests.get(image_data['src'])
+                    res = requests.get(image_data['src'], stream=True)
 
                     # 파일 확장자
                     ext = image_data['src'].split('.').pop()
@@ -67,7 +68,7 @@ class Downloader:
                     # 이미지 파일 저장
                     with open('./backup/images/{}.{}'.format(filename, ext), \
                         'wb') as image:
-                        image.write(res.content)
+                        shutil.copyfileobj(res.raw, image)
                         self._logger.info(name, filename, '다운로드 됨')
 
                 # 싸이월드 서버 부하 방지를 위해 잠시 대기
