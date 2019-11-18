@@ -309,6 +309,7 @@ class ProcessWidget(QWidget):
         mainLayout.addLayout(buttonLayout)
         mainLayout.addStretch(2)
 
+        self.loading = loading
         self.message = message
         self.homeButton = homeButton
         self.openButton = openButton
@@ -413,6 +414,7 @@ class App(QMainWindow):
         self.processWidget.message.setText('작업 준비 중..')
         self.processWidget.homeButton.hide()
         self.processWidget.openButton.hide()
+        self.processWidget.loading.show()
         self.showProcessWidget()
         
         worker = BotWorker(
@@ -438,6 +440,7 @@ class App(QMainWindow):
 
     def done(self):
         self.processWidget.message.setText('게시물 다운로드가 완료되었습니다!')
+        self.processWidget.loading.hide()
         self.processWidget.homeButton.show()
         self.processWidget.openButton.show()
 
