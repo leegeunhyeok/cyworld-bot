@@ -45,7 +45,7 @@ from PyQt5.QtGui import QMovie
 from PyQt5.QtCore import Qt
 
 from bot import CyBot
-from src.util import open_directory
+from src.util import open_directory, resource_path
 
 
 class MainWidget(QWidget):
@@ -77,7 +77,7 @@ class MainWidget(QWidget):
 
         # 로고 이미지, 설명 문구
         logo = QLabel()
-        logo.setPixmap(QPixmap('logo.png'))
+        logo.setPixmap(QPixmap(resource_path('logo.png')))
         logo.setAlignment(Qt.AlignCenter)
         description = QLabel('싸이월드의 사진들로 추억을 간직하세요')
         description.setAlignment(Qt.AlignCenter)
@@ -277,12 +277,12 @@ class ProcessWidget(QWidget):
 
         # 로고 이미지, 설명 문구
         logo = QLabel()
-        logo.setPixmap(QPixmap('logo.png'))
+        logo.setPixmap(QPixmap(resource_path('logo.png')))
         logo.setAlignment(Qt.AlignCenter)
         message = QLabel()
         message.setAlignment(Qt.AlignCenter)
 
-        loadingAnimation = QMovie('./loading.gif')
+        loadingAnimation = QMovie(resource_path('loading.gif'))
         loading = QLabel()
         loading.setMovie(loadingAnimation)
         loading.setAlignment(Qt.AlignCenter)

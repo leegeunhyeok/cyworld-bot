@@ -65,3 +65,12 @@ def open_directory(path):
             subprocess.check_call(['xdg-open', '--', path])
     except:
         pass
+
+def resource_path(relative_path):
+    try:
+        # PyInstaller는 _MEIPASS에 경로 저장함
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath('.')
+
+    return os.path.join(base_path, relative_path)
