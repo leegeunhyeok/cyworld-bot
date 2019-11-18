@@ -164,7 +164,11 @@ class CyBot:
                 cid = content.get_attribute('value')
                 content_url = '{}/home/{}/post/{}/layer' \
                     .format(self._base_url, self._user_id, cid)
-                self._logger.info('Feeder::', content_url)
+                self._logger.info('Feeder::', content_url, callback=False)
+
+                if self._onlog:  
+                    self._onlog('{}개의 게시물 다운로드 중..'.format(content_index + 1))
+
                 content_list.append(content_url)
                 content_index += 1
 
@@ -188,7 +192,10 @@ class CyBot:
 
         running.value = 0
         self._driver.close()
-        self._logger.info('Feeder:: 종료')
+        self._logger.info('Feeder:: 종료', callback=False)
+
+        if self._onlog:  
+            self._onlog('총 {}개의 게시물이 확인되었습니다.\n다운로드가 완료될 때 까지 잠시만 기다려주세요'.format(content_index))
 
 
     def run(self, parser=2, downloader=2):
@@ -262,10 +269,10 @@ class CyBot:
             for p in processes:
                 p.join()
 
-        self._logger.info('작업 소요시간: {}초' \
-            .format(round(time.time() - start, 2)))
-        self._logger.info('전체 이미지 수: {}'.format(count.value))
-        self._done()
+            self._logger.info('작업 소요시간: {}초' \
+                .format(round(time.time() - start, 2)), callback=False)
+            self._logger.info('전체 이미지 수: {}'.format(count.value), callback=False)
+            self._done()
 
 
 if __name__ == '__main__':
