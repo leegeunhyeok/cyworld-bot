@@ -41,6 +41,7 @@ from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QMovie
 from PyQt5.QtCore import Qt
 
 from bot import CyBot
@@ -281,6 +282,12 @@ class ProcessWidget(QWidget):
         message = QLabel()
         message.setAlignment(Qt.AlignCenter)
 
+        loadingAnimation = QMovie('./loading.gif')
+        loading = QLabel()
+        loading.setMovie(loadingAnimation)
+        loading.setAlignment(Qt.AlignCenter)
+        loadingAnimation.start()
+
         buttonLayout = QHBoxLayout()
 
         homeButton = QPushButton('처음으로')
@@ -295,7 +302,9 @@ class ProcessWidget(QWidget):
 
         mainLayout.addStretch(1)
         mainLayout.addWidget(logo)
-        mainLayout.addStretch(2)
+        mainLayout.addSpacing(50)
+        mainLayout.addWidget(loading)
+        mainLayout.addSpacing(20)
         mainLayout.addWidget(message)
         mainLayout.addLayout(buttonLayout)
         mainLayout.addStretch(2)
@@ -428,7 +437,7 @@ class App(QMainWindow):
         self.processWidget.homeButton.show()
 
     def done(self):
-        self.processWidget.message.setText('작업 완료!')
+        self.processWidget.message.setText('게시물 다운로드가 완료되었습니다!')
         self.processWidget.homeButton.show()
         self.processWidget.openButton.show()
 
