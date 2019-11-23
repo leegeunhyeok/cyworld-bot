@@ -163,6 +163,13 @@ class MainWidget(QWidget):
         optionLayout.addLayout(chromeHLayout)
         optionLayout.addLayout(mergeOptionLayout)
 
+        # 개발자 및 깃허브 정보
+        style = 'style="color: #888888; text-decoration: none;"'
+        href_profile = 'href="https://github.com/leegeunhyeok"'
+        developer = QLabel('<a {} {}>Developed by leegeunhyeok</a>'.format(style, href_profile))
+        developer.setAlignment(Qt.AlignCenter)
+        developer.setOpenExternalLinks(True)
+
         # 하단 레이아웃 (시작 버튼 영역)
         bottomLayout = QHBoxLayout()
         startButton = QPushButton('시작하기')
@@ -173,11 +180,13 @@ class MainWidget(QWidget):
         # 메인 레이아웃에 모든 요소 추가
         mainLayout.addWidget(logo)
         mainLayout.addWidget(description)
-        mainLayout.addSpacing(30)
+        mainLayout.addSpacing(20)
         mainLayout.addLayout(accountLayout)
-        mainLayout.addSpacing(10)
+        mainLayout.addSpacing(20)
         mainLayout.addLayout(optionLayout)
         mainLayout.addLayout(bottomLayout)
+        mainLayout.addSpacing(10)
+        mainLayout.addWidget(developer)
 
         self.setLayout(mainLayout)
         self.setFixedSize(width, height)
