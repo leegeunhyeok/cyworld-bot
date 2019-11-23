@@ -1,8 +1,13 @@
+altgraph==0.16.1
 certifi==2019.9.11
 chardet==3.0.4
+future==0.18.2
 idna==2.8
+pefile==2019.4.18
+PyInstaller==3.5
 PyQt5==5.13.2
 PyQt5-sip==12.7.0
+pywin32-ctypes==0.2.0
 requests==2.22.0
 selenium==3.141.0
 soupsieve==1.9.4
