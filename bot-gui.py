@@ -180,12 +180,12 @@ class MainWidget(QWidget):
         # 메인 레이아웃에 모든 요소 추가
         mainLayout.addWidget(logo)
         mainLayout.addWidget(description)
-        mainLayout.addSpacing(20)
+        mainLayout.addStretch(1)
         mainLayout.addLayout(accountLayout)
-        mainLayout.addSpacing(20)
+        mainLayout.addStretch(1)
         mainLayout.addLayout(optionLayout)
         mainLayout.addLayout(bottomLayout)
-        mainLayout.addSpacing(10)
+        mainLayout.addStretch(1)
         mainLayout.addWidget(developer)
 
         self.setLayout(mainLayout)
