@@ -40,6 +40,7 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QMovie
 from PyQt5.QtCore import Qt
@@ -446,5 +447,6 @@ class App(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication([])
+    app.setWindowIcon(QIcon(resource_path('icon.ico')))
     CyWorldBot = App()
     sys.exit(app.exec_())
