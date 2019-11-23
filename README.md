@@ -151,7 +151,7 @@ python3 bot.py
 pyinstaller -w -F -i=icon.ico --add-data "icon.ico;." --add-data "logo.png;." --add-data "loading.gif;." --name CyBot --clean bot-gui.py
 
 # Mac OS
-pyinstaller -w -F -i=icon.ico --add-data icon.ico:. --add-data logo.png:. --add-data loading.gif:. --name CyBot --clean bot-gui.py
+pyinstaller -w -F -i=icon.icns --add-data icon.icns:. --add-data logo.png:. --add-data loading.gif:. --name CyBot --clean bot-gui.py
 ```
 
 - `-w`: 콘솔창 숨기기 (윈도우 모드)
