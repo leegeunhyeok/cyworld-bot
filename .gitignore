@@ -1,6 +1,7 @@
 driver/chromedriver*
 *.pyc
 *.log
+*.spec
 
 backup/images/*.gif
 backup/images/*.jpg
