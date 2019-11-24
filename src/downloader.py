@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import os
 import time
 import shutil
 import requests
@@ -30,6 +31,13 @@ from multiprocessing import current_process
 class Downloader:
     def __init__(self, logger):
         self._logger = logger
+        post_dir = './backup/posts'
+        image_dir = './backup/images'
+        if not os.path.exists(post_dir):
+            os.makedirs(post_dir)
+
+        if not os.path.exists(image_dir):
+            os.makedirs(image_dir)
 
 
     def download(self, image_list, count, lock, parser_running):
