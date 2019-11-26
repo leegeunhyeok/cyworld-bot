@@ -24,6 +24,7 @@ SOFTWARE.
 
 import time
 import configparser
+import multiprocessing
 from multiprocessing import Process, Manager, current_process
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -41,6 +42,9 @@ from sys import exit
 # 유저 계정 정보 로드
 config = configparser.ConfigParser()
 config.read('config.ini')
+
+# 윈도우 환경을 위함
+multiprocessing.freeze_support()
 
 class CyBot:
     def __init__(self, chromedriver, wait=5, delay=3, \
@@ -116,6 +120,12 @@ class CyBot:
         if 'timeline' in url:
             self._logger.success('로그인 성공')
             return self
+        elif 'pwd' in url.lower():
+            # a.next 클릭으로 "다음에 변경하기" 클릭 가능
+            # 사용자의 개인정보와 관련되어있기 때문에 직접 조작하도록 함
+            self._logger.error('싸이월드에 직접 로그인하여 비밀번호 변경 페이지를 확인한 후 다시 시도해주세요')
+            self._onerror()
+            return None
         else:
             self._logger.error('사용자 정보를 확인해주세요')
             self._onerror()
