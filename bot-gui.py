@@ -447,6 +447,7 @@ class App(QMainWindow):
 
     def error(self):
         self.worker.stop()
+        self.processWidget.loading.hide()
         self.processWidget.homeButton.show()
 
     def done(self):
