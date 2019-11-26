@@ -43,9 +43,6 @@ from sys import exit
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-# 윈도우 환경을 위함
-multiprocessing.freeze_support()
-
 class CyBot:
     def __init__(self, chromedriver, wait=5, delay=3, \
         headless=False, onlog=None, onerror=exit, done=exit):

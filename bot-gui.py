@@ -457,6 +457,8 @@ class App(QMainWindow):
         self.processWidget.openButton.show()
 
 if __name__ == '__main__':
+    # 윈도우 환경을 위함
+    multiprocessing.freeze_support()
     app = QApplication([])
     app.setWindowIcon(QIcon(resource_path('icon.ico')))
     CyWorldBot = App()
