@@ -3,7 +3,11 @@
   <img src="./logo.png">
 
 싸이월드의 사진들로 추억을 간직하세요
+
+  <img alt="Github actions" src="https://github.com/leegeunhyeok/cyworld-bot/workflows/pyinstaller-build/badge.svg">
+
 </div>
+
 
 ## 설치 및 사용법 - GUI 방식 (추천)
 
