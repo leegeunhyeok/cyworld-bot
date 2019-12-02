@@ -1,4 +1,4 @@
-name: PyInstaller build
+name: pyinstaller-build
 
 on: [push]
 
