@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 import os
+import sys
 import time
 import shutil
 import requests
@@ -31,13 +32,23 @@ from multiprocessing import current_process
 class Downloader:
     def __init__(self, logger):
         self._logger = logger
-        post_dir = './backup/posts'
-        image_dir = './backup/images'
+
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(sys.executable)
+        elif __file__:
+            application_path = os.path.dirname(__file__)
+
+        post_dir = os.path.join(application_path, './backup/posts')
+        image_dir = os.path.join(application_path, './backup/images')
+            
         if not os.path.exists(post_dir):
             os.makedirs(post_dir)
 
         if not os.path.exists(image_dir):
             os.makedirs(image_dir)
+
+        self.post_dir = post_dir
+        self.image_dir = image_dir
 
 
     def download(self, image_list, count, lock, parser_running):
@@ -69,13 +80,19 @@ class Downloader:
                     )
 
                     # 게시물 내용 저장
-                    with open('./backup/posts/{}.txt'.format(filename), 'w') \
-                        as text:
+                    post_file_name = '{}.txt'.format(filename)
+                    with open(
+                        os.path.join(self.post_dir, post_file_name),
+                        'w'
+                    ) as text:
                         text.write(image_data['content'])
 
                     # 이미지 파일 저장
-                    with open('./backup/images/{}.{}'.format(filename, ext), \
-                        'wb') as image:
+                    image_file_name = '{}.{}'.format(filename, ext)
+                    with open(
+                        os.path.join(self.image_dir, image_file_name),
+                        'wb'
+                    ) as image:
                         shutil.copyfileobj(res.raw, image)
                         self._logger.info(name, filename, '다운로드 됨')
 
