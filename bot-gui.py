@@ -136,7 +136,7 @@ class MainWidget(QWidget):
         # 네트워크 대기시간, 지연시간 옵션 영역 (#2)
         secondaryOptionLayout = QFormLayout()
         timeoutLabel = QLabel('Timeout')
-        timeoutField = QLineEdit('5')
+        timeoutField = QLineEdit('10')
         timeoutField.setFixedWidth(50)
         self.timeoutField = timeoutField
 
@@ -328,9 +328,12 @@ class ProcessWidget(QWidget):
         self.setFixedSize(width, height)
 
     def openResultPath(self):
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(file_path, 'backup')
-        open_directory(path)
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(sys.executable)
+        elif __file__:
+            application_path = os.path.dirname(__file__)
+
+        open_directory(os.path.join(application_path, './backup'))
 
 
 class BotWorker(QThread):
@@ -459,6 +462,32 @@ class App(QMainWindow):
 if __name__ == '__main__':
     # 윈도우 환경을 위함
     multiprocessing.freeze_support()
+    multiprocessing.set_start_method('spawn')
+    logo = '''
+                ,000,
+                0   0
+                '000'
+                  0
+                  0
+           ,0000000000000,
+        ,0'000000000000000'0,
+      ,00000`           `00000,
+     ,0000`  @         @  `0000,
+     0000`   @   ,00   @   `0000
+     0000       00          0000
+     0000,       '00       ,0000
+     '0000,   (_______)   ,0000'
+      '00000,          ,00000'
+        '0,000000000000000,0'
+           '0000000000000'
+
+                CyBot
+
+          GUI VERSION 1.0.0
+    '''
+    print(logo, end='\n\n')
+    print('알림: 잠시만 기다려주세요..')
+    print('알림: 이 창은 절대 닫지 마세요!')
     app = QApplication([])
     app.setWindowIcon(QIcon(resource_path('icon.ico')))
     CyWorldBot = App()
