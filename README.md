@@ -13,10 +13,11 @@
 
 ### 0. 사전 준비
 
-정상적인 실행을 위해 크롬 드라이버가 필요합니다.
+실행을 위해 `크롬 브라우저`와 `드라이버`가 필요합니다.
+- 구글 크롬 브라우저 - [다운로드](https://www.google.com/intl/ko/chrome) 후 설치
 - 크롬 드라이버 - [다운로드](https://sites.google.com/a/chromium.org/chromedriver/downloads)
 
-자세한 내용은 [여기](#3-크롬-드라이버-다운로드)를 참고해주세요
+드라이버에 대한 자세한 내용은 [여기](#3-크롬-드라이버-다운로드)를 참고해주세요
 
 ### 1. 프로그램 다운로드
 
@@ -63,8 +64,8 @@
 
 ### 0. 사전 준비
 
-- 파이썬3 - [다운로드](https://www.python.org/downloads/release/python-365)
-- 구글 크롬 브라우저 - [다운로드](https://www.google.com/intl/ko/chrome)
+- 파이썬3 - [다운로드](https://www.python.org/downloads/release/python-365) 후 설치
+- 구글 크롬 브라우저 - [다운로드](https://www.google.com/intl/ko/chrome) 후 설치
 - 크롬 드라이버 - [다운로드](https://sites.google.com/a/chromium.org/chromedriver/downloads)
 
 아래 가이드를 통해 상세한 설치 방법을 확인하실 수 있습니다.
