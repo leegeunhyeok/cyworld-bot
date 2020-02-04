@@ -39,9 +39,12 @@ class Logger:
         elif __file__:
             application_path = os.path.dirname(__file__)
 
-        log_dir = os.path.join(application_path, self._filename)
+        log_dir = os.path.join(application_path, './logs')
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
+        
+        self._log_dir = log_dir
+        self._log_file = os.path.join(log_dir, self._filename)
 
     def _timestamp(self):
         return '(' + datetime.now().strftime(self._format) + ')'
@@ -54,7 +57,7 @@ class Logger:
         if self._callback and callback:
             self._callback(m)
 
-        with open(self._filename, 'a', encoding='utf8') as f:
+        with open(self._log_file, 'a', encoding='utf8') as f:
             f.write(tm.strip() + '\n')
 
     def info(self, *args, callback=True):
