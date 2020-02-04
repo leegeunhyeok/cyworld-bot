@@ -146,20 +146,23 @@ python3 bot.py
 
 ## GUI(PyQt5) 빌드
 
+> GUI 버전의 경우 파이썬 `3.7.5` 버전으로 테스트 및 빌드
+
 ```bash
 # Windows
-pyinstaller -w -F -i=icon.ico --add-data "icon.ico;." --add-data "logo.png;." --add-data "loading.gif;." --name CyBot --clean bot-gui.py
+pyinstaller -F -i=icon.ico --add-data "icon.ico;." --add-data "logo.png;." --add-data "loading.gif;." --name CyBot --clean bot-gui.py
 
 # Mac OS
-pyinstaller -w -F -i=icon.icns --add-data icon.icns:. --add-data logo.png:. --add-data loading.gif:. --name CyBot --clean bot-gui.py
+pyinstaller -F -i=icon.icns --add-data icon.icns:. --add-data logo.png:. --add-data loading.gif:. --name CyBot --clean bot-gui.py
 ```
 
-- `-w`: 콘솔창 숨기기 (윈도우 모드)
 - `-F`: 하나의 파일로 번들링
 - `-i`: 애플리케이션 아이콘 지정
 - `--add-data`: 애플리케이션 리소스 지정
 - `--name`: 빌드 결과물 파일먕
 - `--clean`: 임시파일 및 캐시 삭제
+
+- `-w`: 옵션 사용 불가, (멀티 프로세싱 관련 문제가 발생.. 해결하기 위해 노력했으나 문제점을 찾지 못함)
 
 ## 이슈
 사용 중 문제가 발생할 경우 [이슈](https://github.com/leegeunhyeok/cyworld-bot/issues) 남겨주세요 😊
