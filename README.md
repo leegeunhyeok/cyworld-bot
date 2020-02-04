@@ -20,7 +20,7 @@
 
 ### 1. 프로그램 다운로드
 
-- CyBot [다운로드](#https://github.com/leegeunhyeok/cyworld-bot/releases)
+- CyBot [다운로드](https://github.com/leegeunhyeok/cyworld-bot/releases)
 
 > `2020.02.04` 기준 지원 운영체제 (Windows, MacOS)
 
