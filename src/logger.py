@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 import os
+import sys
 from datetime import datetime
 
 class Logger:
@@ -33,7 +34,12 @@ class Logger:
         self._create_dir()
 
     def _create_dir(self):
-        log_dir = os.path.dirname(self._filename)
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(sys.executable)
+        elif __file__:
+            application_path = os.path.dirname(__file__)
+
+        log_dir = os.path.join(application_path, self._filename)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
