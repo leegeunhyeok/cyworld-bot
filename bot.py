@@ -98,9 +98,14 @@ class CyBot:
         self._logger.info('로그인 시도 중..')
 
         prev_url = self._driver.current_url
-        self._driver.find_element_by_name('email').send_keys(user_email)
-        self._driver.find_element_by_name('passwd') \
-            .send_keys(user_password, Keys.RETURN)
+        try:
+            self._driver.find_element_by_name('email').send_keys(user_email)
+            self._driver.find_element_by_name('passwd') \
+                .send_keys(user_password, Keys.RETURN)
+        except:
+            self._logger.error('알 수 없는 오류가 발생했습니다')
+            self._onerror()
+            return None
 
         try:
             self._wait.until(EC_or(
@@ -242,16 +247,16 @@ class CyBot:
                     self._options
                 )
                 parser_process = Process(
-                    target=parser_instance.parse, \
+                    target=parser_instance.parse,
                     args=(
                         content_list,
                         image_list,
                         feeder_running,
                         parser_running
-                    )
+                    ),
+                    daemon=True
                 )
                 parser_process.name = 'Parser::' + str(idx)
-                parser_process.daemon = True
                 parser_process.start()
                 processes.append(parser_process)
                 self._logger.info('Parser', str(idx), '프로세스 시작')
@@ -260,10 +265,11 @@ class CyBot:
             for idx in range(downloader):
                 downloader_instance = Downloader(downloader_logger)
                 downloader_process = Process(
-                    target=downloader_instance.download, \
-                    args=(image_list, count, lock, parser_running))
+                    target=downloader_instance.download,
+                    args=(image_list, count, lock, parser_running),
+                    daemon=True
+                )
                 downloader_process.name = 'Downloader::' + str(idx)
-                downloader_process.daemon = True
                 downloader_process.start()
                 processes.append(downloader_process)
                 self._logger.info('Downloader', str(idx), '프로세스 시작')
