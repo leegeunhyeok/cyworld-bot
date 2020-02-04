@@ -9,16 +9,18 @@
 </div>
 
 
-## 설치 및 사용법 - GUI 방식 (추천) - Work in progress..
+## 설치 및 사용법 - GUI 방식
 
 ### 0. 사전 준비
 
 정상적인 실행을 위해 크롬 드라이버가 필요합니다.
 - 크롬 드라이버 - [다운로드](https://sites.google.com/a/chromium.org/chromedriver/downloads)
 
+자세한 내용은 [여기](#3-크롬-드라이버-다운로드)를 참고해주세요
+
 ### 1. 프로그램 다운로드
 
-- CyBot [다운로드](#)
+- CyBot [다운로드](#https://github.com/leegeunhyeok/cyworld-bot/releases)
 
 > `2020.02.04` 기준 지원 운영체제 (Windows, MacOS)
 
