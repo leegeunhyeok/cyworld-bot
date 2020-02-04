@@ -154,7 +154,7 @@ python3 bot.py
 
 ```bash
 # Windows
-pyinstaller -F -i=icon.ico --add-data "icon.ico;." --add-data "logo.png;." --add-data "loading.gif;." --name CyBot --clean bot-gui.py
+pyinstaller -F -i="icon.ico" --add-data "icon.ico;." --add-data "logo.png;." --add-data "loading.gif;." --name CyBot --clean bot-gui.py
 
 # Mac OS
 pyinstaller -F -i=icon.icns --add-data icon.icns:. --add-data logo.png:. --add-data loading.gif:. --name CyBot --clean bot-gui.py
