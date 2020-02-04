@@ -4,7 +4,9 @@
 
 싸이월드의 사진들로 추억을 간직하세요
 
-  <img alt="Github actions" src="https://github.com/leegeunhyeok/cyworld-bot/workflows/pyinstaller-build/badge.svg">
+  <a href="https://github.com/leegeunhyeok/cyworld-bot/actions?query=workflow:pyinstaller-build" alt="Github actions">
+    <img src="https://github.com/leegeunhyeok/cyworld-bot/workflows/pyinstaller-build/badge.svg">
+  </a>
 
 </div>
 
