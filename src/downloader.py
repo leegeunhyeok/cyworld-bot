@@ -67,7 +67,7 @@ class Downloader:
                     image_data = image_list.pop(0)
 
                     # 이미지 다운로드
-                    res = requests.get(image_data['src'], stream=True)
+                    res = requests.get(image_data['src'], timeout=20, stream=True)
 
                     # 파일 확장자
                     ext = image_data['src'].split('.').pop()
