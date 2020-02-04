@@ -46,7 +46,7 @@ config.read('config.ini')
 class CyBot:
     def __init__(self, chromedriver, wait=5, delay=3, \
         headless=False, onlog=None, onerror=exit, done=exit):
-        self._logger = Logger('./logs/cybot.log', callback=onlog)
+        self._logger = Logger('cybot.log', callback=onlog)
 
         self._chromedriver = chromedriver
         self._base_url = 'https://cy.cyworld.com'
@@ -227,8 +227,8 @@ class CyBot:
             feeder_running = manager.Value('i', 1)
             parser_running = manager.Value('i', 1)
 
-            parser_logger = Logger('./logs/cybot_parser.log')
-            downloader_logger = Logger('./logs/cybot_downloader.log')
+            parser_logger = Logger('cybot_parser.log')
+            downloader_logger = Logger('cybot_downloader.log')
             main_cookies = self._driver.get_cookies()
             cookie = []
 
