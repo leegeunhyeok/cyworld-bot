@@ -105,8 +105,7 @@ class CyBot:
             self._driver.find_element_by_name('passwd') \
                 .send_keys(user_password, Keys.RETURN)
         except Exception as e:
-            print(e)
-            self._logger.error('알 수 없는 오류가 발생했습니다')
+            self._logger.error('알 수 없는 오류가 발생했습니다', detail=e)
             self._onerror()
             return None
 
@@ -116,8 +115,8 @@ class CyBot:
                 EC.invisibility_of_element( \
                     (By.CSS_SELECTOR, '.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable'))
             ))
-        except:
-            self._logger.error('시간이 초과되었습니다')
+        except Exception as e:
+            self._logger.error('시간이 초과되었습니다', detail=e)
             self._onerror()
             return None
 
@@ -151,8 +150,8 @@ class CyBot:
 
         try:
             self._wait.until(EC.url_changes(prev_url))
-        except:
-            self._logger.error('시간이 초과되었습니다')
+        except Exception as e:
+            self._logger.error('시간이 초과되었습니다', detail=e)
             self._onerror()
             return None
 
@@ -181,8 +180,10 @@ class CyBot:
                     .format(self._base_url, self._user_id, cid)
                 self._logger.info('Feeder::', content_url, callback=False)
 
-                if self._onlog:  
-                    self._onlog('{}개의 게시물 다운로드 중..'.format(content_index + 1))
+                if self._onlog:
+                    self._onlog(
+                        '{}개의 게시물 다운로드 중..'.format(content_index + 1)
+                    )
 
                 content_list.append(content_url)
                 content_index += 1
