@@ -102,8 +102,11 @@ class CyBot:
         prev_url = self._driver.current_url
         try:
             self._driver.find_element_by_name('email').send_keys(user_email)
-            self._driver.find_element_by_name('passwd') \
-                .send_keys(user_password, Keys.RETURN)
+            self._driver.execute_script(
+                'arguments[0].value = "{}"'.format(user_password),
+                self._driver.find_element_by_name('passwd')
+            )
+            self._driver.find_element_by_name('passwd').send_keys(Keys.RETURN)
         except Exception as e:
             self._logger.error('알 수 없는 오류가 발생했습니다', detail=e)
             self._onerror()
