@@ -133,8 +133,11 @@ class Parser:
                     break
                 except Exception as e:
                     time.sleep(3)
-                    self._logger.error(str(e) + ' - Attempt({}/{})' \
-                        .format(attempt, Parser.__ATTEMPT__))
+                    self._logger.error(
+                        '{}:{} - Attempt({}/{})'.format(
+                            target_url, str(e), attempt, Parser.__ATTEMPT__
+                        )
+                    )
 
         parser_running.value = 0
         parser_driver.close()

@@ -118,7 +118,13 @@ class Downloader:
                     break
                 except Exception as e:
                     time.sleep(3)
-                    self._logger.error(str(e) + ' - Attempt({}/{})' \
-                        .format(attempt, Downloader.__ATTEMPT__))
+                    self._logger.error(
+                        '{}:{} - Attempt({}/{})'.format(
+                            image_data['src'],
+                            str(e),
+                            attempt,
+                            Downloader.__ATTEMPT__
+                        )
+                    )
 
         self._logger.info(name, '종료')
