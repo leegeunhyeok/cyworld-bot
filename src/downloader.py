@@ -59,60 +59,62 @@ class Downloader:
         name = current_process().name
 
         while parser_running.value or len(image_list) != 0:
-            attempt = 0
+            try:
+                image_data = image_list.pop(0)
+            except IndexError:
+                time.sleep(1)
+                continue
+            except Exception as e:
+                self._logger.error(str(e))
+                time.sleep(1)
+                continue
 
+            attempt = 0
             while attempt < Downloader.__ATTEMPT__:
                 attempt += 1
 
                 try:
-                    if len(image_list) != 0:
-                        # 공유 메모리 변수 락
-                        with lock:
-                            # 현재 카운트 저장 및 1증가
-                            current_count = count.value
-                            count.value += 1
+                    with lock:
+                        # 현재 카운트 저장 및 1증가
+                        current_count = count.value
+                        count.value += 1
 
-                        # 이미지 데이터 추출
-                        image_data = image_list.pop(0)
+                    # 이미지 다운로드
+                    res = requests.get(
+                        image_data['src'],
+                        timeout=20,
+                        stream=True
+                    )
 
-                        # 이미지 다운로드
-                        res = requests.get(
-                            image_data['src'],
-                            timeout=20,
-                            stream=True
-                        )
+                    # 파일 확장자
+                    ext = image_data['src'].split('.').pop()
 
-                        # 파일 확장자
-                        ext = image_data['src'].split('.').pop()
+                    # 저장 파일명 생성
+                    filename = '{}_{}_{}'.format(
+                        image_data['date'],
+                        image_data['title'],
+                        current_count
+                    )
 
-                        # 저장 파일명 생성
-                        filename = '{}_{}_{}'.format(
-                            image_data['date'],
-                            image_data['title'],
-                            current_count
-                        )
+                    # 게시물 내용 저장
+                    post_file_name = '{}.txt'.format(filename)
+                    with open(
+                        os.path.join(self.post_dir, post_file_name),
+                        'w'
+                    ) as text:
+                        text.write(image_data['content'])
 
-                        # 게시물 내용 저장
-                        post_file_name = '{}.txt'.format(filename)
-                        with open(
-                            os.path.join(self.post_dir, post_file_name),
-                            'w'
-                        ) as text:
-                            text.write(image_data['content'])
-
-                        # 이미지 파일 저장
-                        image_file_name = '{}.{}'.format(filename, ext)
-                        with open(
-                            os.path.join(self.image_dir, image_file_name),
-                            'wb'
-                        ) as image:
-                            shutil.copyfileobj(res.raw, image)
-                            self._logger.info(name, filename, '다운로드 됨')
+                    # 이미지 파일 저장
+                    image_file_name = '{}.{}'.format(filename, ext)
+                    with open(
+                        os.path.join(self.image_dir, image_file_name),
+                        'wb'
+                    ) as image:
+                        shutil.copyfileobj(res.raw, image)
+                        self._logger.info(name, filename, '다운로드 됨')
 
                     # 싸이월드 서버 부하 방지를 위해 잠시 대기
                     time.sleep(1)
-                    break
-                except IndexError:
                     break
                 except Exception as e:
                     time.sleep(3)
