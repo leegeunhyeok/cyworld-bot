@@ -113,10 +113,19 @@ class CyBot:
             return None
 
         try:
+            selectors = [
+                '.ui-dialog',
+                '.ui-widget',
+                '.ui-widget-content',
+                '.ui-corner-all',
+                '.ui-front',
+                '.ui-draggable',
+                '.ui-resizable'
+            ]
             self._wait.until(EC_or(
                 EC.url_changes(prev_url),
                 EC.invisibility_of_element( \
-                    (By.CSS_SELECTOR, '.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.ui-front.ui-draggable.ui-resizable'))
+                    (By.CSS_SELECTOR, ''.join(selectors)))
             ))
         except Exception as e:
             self._logger.error('시간이 초과되었습니다', detail=e)
