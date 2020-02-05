@@ -44,7 +44,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 class CyBot:
-    __VERSION__ = '1.0.1'
+    __VERSION__ = '1.0.2'
 
     def __init__(self, chromedriver, wait=5, delay=3, \
         headless=False, onlog=None, onerror=exit, done=exit):
