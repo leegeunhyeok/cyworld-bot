@@ -49,10 +49,16 @@ class Logger:
     def _timestamp(self):
         return '(' + datetime.now().strftime(self._format) + ')'
 
-    def _log(self, level, *args, callback):
+    def _log(self, level, *args, detail, callback):
         m = level + ' ' + (' '.join(args[0]))
         tm = self._timestamp() + ' - ' + m
+
         print(tm)
+        if detail:
+            try:
+                print(detail)
+            except:
+                pass
 
         if self._callback and callback:
             self._callback(m)
@@ -60,20 +66,27 @@ class Logger:
         with open(self._log_file, 'a', encoding='utf8') as f:
             f.write(tm.strip() + '\n')
 
-    def info(self, *args, callback=True):
-        self._log('[INFO]', args, callback=callback)
+            if detail:
+            try:
+                f.write(detail)
+                f.write('\n')
+            except:
+                pass
 
-    def success(self, *args, callback=True):
-        self._log('[SUCCESS]', args, callback=callback)
+    def info(self, *args, detail=None, callback=True):
+        self._log('[INFO]', args, detail=detail, callback=callback)
 
-    def warning(self, *args, callback=True):
-        self._log('[WARNING]', args, callback=callback)
+    def success(self, *args, detail=None, callback=True):
+        self._log('[SUCCESS]', args, detail=detail, callback=callback)
 
-    def error(self, *args, callback=True):
-        self._log('[ERROR]', args, callback=callback)
+    def warning(self, *args, detail=None, callback=True):
+        self._log('[WARNING]', args, detail=detail, callback=callback)
 
-    def danger(self, *args, callback=True):
-        self._log('[DANGER]', args, callback=callback)
+    def error(self, *args, detail=None, callback=True):
+        self._log('[ERROR]', args, detail=detail, callback=callback)
 
-    def critical(self, *args, callback=True):
-        self._log('[CRITICAL]', args, callback=callback)
+    def danger(self, *args, detail=None, callback=True):
+        self._log('[DANGER]', args, detail=detail, callback=callback)
+
+    def critical(self, *args, detail=None, callback=True):
+        self._log('[CRITICAL]', args, detail=detail, callback=callback)
