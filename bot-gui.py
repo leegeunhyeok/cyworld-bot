@@ -481,8 +481,8 @@ if __name__ == '__main__':
 
                 CyBot
 
-          GUI VERSION 1.0.0
-    '''
+          GUI VERSION {}
+    '''.format(CyBot.__VERSION__)
     print(logo, end='\n\n')
     print('알림: 잠시만 기다려주세요..')
     print('알림: 이 창은 절대 닫지 마세요!')
