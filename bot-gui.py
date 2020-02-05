@@ -48,8 +48,6 @@ from PyQt5.QtCore import Qt
 from bot import CyBot
 from src.util import open_directory, resource_path
 
-__VERSION__ = '1.0.0'
-
 class MainWidget(QWidget):
     def __init__(self, window, left, top, width, height, cpu_count):
         '''생성자
@@ -380,7 +378,7 @@ class App(QMainWindow):
     def __init__(self):
         '''생성자'''
         super().__init__()
-        self.title = 'Cyworld Bot v{}'.format(__VERSION__) 
+        self.title = 'Cyworld Bot v{}'.format(CyBot.__VERSION__) 
         self.left = 10
         self.top = 10
         self.width = 640

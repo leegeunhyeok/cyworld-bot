@@ -44,6 +44,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 class CyBot:
+    __VERSION__ = '1.0.0'
+
     def __init__(self, chromedriver, wait=5, delay=3, \
         headless=False, onlog=None, onerror=exit, done=exit):
         self._logger = Logger('cybot.log', callback=onlog)
@@ -65,20 +67,20 @@ class CyBot:
     def init(self):
         self._logger.info('크롬 드라이버 로딩 중..')
         try:
-            options = None
+            options = webdriver.ChromeOptions()
             if self._headless:
-                options = webdriver.ChromeOptions()
                 options.add_argument('headless')
                 options.add_argument('window-size=800x600')
                 options.add_argument("disable-gpu")
                 options.add_argument('log-level=3')
-                driver = webdriver.Chrome(self._chromedriver, \
-                    chrome_options=options)
-            else:
-                driver = webdriver.Chrome(self._chromedriver)
+
+            options.add_argument('--ignore-certificate-errors')
+            options.add_argument('--ignore-ssl-errors')
+            driver = webdriver.Chrome(self._chromedriver, \
+                chrome_options=options)
             driver.implicitly_wait(self._wait_time)
         except Exception as e:
-            self._logger.error('크롬 드라이버 로딩 실패')
+            self._logger.error('크롬 드라이버 로딩 실패', detail=e)
             self._onerror()
             return
 
@@ -102,7 +104,8 @@ class CyBot:
             self._driver.find_element_by_name('email').send_keys(user_email)
             self._driver.find_element_by_name('passwd') \
                 .send_keys(user_password, Keys.RETURN)
-        except:
+        except Exception as e:
+            print(e)
             self._logger.error('알 수 없는 오류가 발생했습니다')
             self._onerror()
             return None
