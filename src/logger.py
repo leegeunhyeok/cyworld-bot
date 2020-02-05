@@ -37,7 +37,8 @@ class Logger:
         if getattr(sys, 'frozen', False):
             application_path = os.path.dirname(sys.executable)
         elif __file__:
-            application_path = os.path.dirname(__file__)
+            import __main__
+            application_path = os.path.dirname(__main__.__file__)
 
         log_dir = os.path.join(application_path, './logs')
         if not os.path.exists(log_dir):
@@ -45,6 +46,7 @@ class Logger:
         
         self._log_dir = log_dir
         self._log_file = os.path.join(log_dir, self._filename)
+        self.info('Log path: ' + self._log_file)
 
     def _timestamp(self):
         return '(' + datetime.now().strftime(self._format) + ')'
@@ -67,11 +69,11 @@ class Logger:
             f.write(tm.strip() + '\n')
 
             if detail:
-            try:
-                f.write(detail)
-                f.write('\n')
-            except:
-                pass
+                try:
+                    f.write(str(detail))
+                    f.write('\n')
+                except:
+                    pass
 
     def info(self, *args, detail=None, callback=True):
         self._log('[INFO]', args, detail=detail, callback=callback)
