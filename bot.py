@@ -112,6 +112,8 @@ class CyBot:
             self._onerror()
             return None
 
+        time.sleep(3)
+
         try:
             selectors = [
                 '.ui-dialog',
